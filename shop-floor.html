@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SHOP FLOOR v5.9.3 | Scoping to Project</title>
+<title>SHOP FLOOR v5.9.5 | Scoping to Project</title>
 <style>
 :root{
   --bg:#f6f1e8; --panel:#fffaf0; --panel2:#efe8d8; --panel3:#fff6da; --ink:#182126; --muted:#5a666d;
@@ -92,6 +92,7 @@ label{display:block; color:var(--muted); font-size:13px; margin:8px 0 5px;}
 .pct-pill.warn{background:var(--yellow); color:#1b1607}.pct-pill.critical{background:#fb7373}.pct-pill.muted{background:var(--panel2); color:var(--ink)}
 .kv{display:grid; grid-template-columns:130px 1fr; gap:8px; font-size:14px; margin:6px 0}.kv b{color:var(--muted)}
 .table-wrap{overflow:auto; border:1px solid var(--line); border-radius:18px; background:var(--panel);}
+.sds-table table{min-width:1100px; font-size:13px;} .sds-table th,.sds-table td{padding:8px 10px;} .material-safety-ledger{margin-bottom:28px;}
 table{width:100%; border-collapse:collapse; min-width:700px;} th,td{text-align:left; padding:12px 14px; border-bottom:1px solid var(--line); vertical-align:top;} th{font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em;} tr:last-child td{border-bottom:0}
 .phase-strip{display:flex; gap:8px; flex-wrap:wrap}.phase{border-radius:999px; padding:7px 10px; border:1px solid var(--line); color:var(--muted); background:rgba(255,255,255,.05); font-size:12px}.phase.active{background:var(--teal); color:white;border-color:transparent}
 .alert{display:flex; justify-content:space-between; gap:12px; align-items:flex-start; border:1px solid var(--line); border-left:7px solid var(--yellow); background:var(--panel2); border-radius:18px; padding:14px; margin-bottom:10px;}.alert.critical{border-left-color:#fb7373}.alert.good{border-left-color:var(--green)}.alert p{margin:4px 0 0}.alert-actions{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end}
@@ -165,7 +166,7 @@ table{width:100%; border-collapse:collapse; min-width:700px;} th,td{text-align:l
 <body data-theme="dark">
 <div class="app-shell" id="shell">
   <aside class="sidebar">
-    <div class="brand"><div class="mark">SF</div><div><h1>SHOP<br>FLOOR</h1><span class="version" id="versionBadge">v5.9.3 Project Core</span></div></div>
+    <div class="brand"><div class="mark">SF</div><div><h1>SHOP<br>FLOOR</h1><span class="version" id="versionBadge">v5.9.5 Project Core</span></div></div>
     <p class="side-note">Project-centered shop management for a small tradigital team. Plan the work, prove readiness, protect people, buy what is missing, and keep machines healthy.</p>
     <nav class="nav" id="nav"></nav>
     <div class="side-tools">
@@ -185,13 +186,13 @@ table{width:100%; border-collapse:collapse; min-width:700px;} th,td{text-align:l
       <div class="quick-search"><input id="globalSearch" placeholder="Search projects, inventory, tools, spaces, JHAs, recipes, people, tasks, vendors, tags..." oninput="setSearch(this.value)" /></div>
     </div>
     <section id="app"></section>
-    <div class="footer">SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.3.</div>
+    <div class="footer">SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.5.</div>
   </main>
 </div>
 <div id="modalBackdrop" class="modal-backdrop" onclick="if(event.target.id==='modalBackdrop') closeModal()"><div class="modal" id="modal"></div></div>
 <div id="printArea"></div>
 <script>
-const VERSION = '5.9.3';
+const VERSION = '5.9.5';
 const STORAGE_KEY = 'shopFloorProjectCoreV5';
 const LEGACY_KEYS = ['shopFloorOperatingBoardV4','shopFloorV4','shopFloorData','shopFloorProjectCoreV5'];
 const PHASES = ['Idea','Planning','Design','Prep','Fabrication','Assembly','Test','Documentation','Complete'];
@@ -2352,11 +2353,11 @@ function renderSafety(){
   <div class="toolbar"><button class="btn primary" onclick="openJHAForm()">Add JHA</button><button class="btn" onclick="printReport('safety')">Print Safety Gate Report</button><button class="btn" onclick="printReport('expiredAuth')">Print Expired Authorizations</button><button class="btn" onclick="printReport('materialSafety')">Print SDS Library</button></div>
   <section class="card"><h3>Safety Readiness Gates</h3><p>Safety is now a readiness gate. Missing SDS, missing JHAs, expired authorizations, missing PPE, material handling gaps, and maintenance lockout gaps can block a project from being ready.</p>${rows.map(r=>`<div class="alert ${r.level}"><div><strong>${esc(r.title)}</strong><p>${r.projectName?`<b>Project:</b> ${esc(r.projectName)} • `:''}${esc(r.detail||'')}</p>${r.category?badge(r.category,r.level):''}</div><div class="alert-actions">${r.projectId?`<button class="btn small" onclick="selectProject('${r.projectId}')">Open Project</button>`:''}${(r.actions||[]).map(a=>`<button class="btn small" onclick="${a.onclick}">${esc(a.label)}</button>`).join('')}</div></div>`).join('') || '<p>No safety gate findings in the current search.</p>'}</section>
   <div class="grid cols-2" style="margin-top:16px">
-    <section class="card"><h3>Material Safety / SDS</h3>${materialRows.map(it=>`<div class="alert ${v56IsHazardousMaterial(it)&&!it.sdsUrl?'critical':v56IsHazardousMaterial(it)&&(!it.ppe||!it.storage)?'warn':'good'}"><div><strong>${esc(it.name)}</strong><p>${esc(it.category||'Material')} • SDS: ${esc(it.sdsUrl||'Missing')} • PPE: ${esc(it.ppe||'unset')} • Storage: ${esc(it.storage||'unset')}</p>${it.hazards?`<p><b>Hazards:</b> ${esc(it.hazards)}</p>`:''}</div><div class="alert-actions"><button class="btn small" onclick="openItemForm('${it.id}')">Edit</button></div></div>`).join('')||'<p>No inventory items yet.</p>'}</section>
     <section class="card"><h3>Training & Authorization Gates</h3>${authRows.sort((a,b)=>v56LevelSort(a,b)).map(x=>`<div class="alert ${x.status}"><div><strong>${esc(x.person.name)}</strong><p>${esc(x.auth.targetType)} • ${esc(authTargetName(x.auth))} • expires ${esc(x.auth.expires||'no expiration')}</p></div><div class="alert-actions"><button class="btn small" onclick="openPersonForm('${x.person.id}')">Open Person</button></div></div>`).join('')||'<p>No authorizations yet.</p>'}</section>
     <section class="card"><h3>JHA Coverage</h3>${jhaCoverage.map(x=>`<div class="alert ${x.jhas.length?'good':'critical'}"><div><strong>${esc(x.name)}</strong><p>${esc(x.type)} • ${x.jhas.length?x.jhas.map(j=>esc(j.title)).join(', '):'Missing JHA'}</p></div><div class="alert-actions"><button class="btn small" onclick="openJHAForm(null,'${x.type}','${x.id}')">Add JHA</button><button class="btn small" onclick="${x.type==='Tool'?`openToolForm('${x.id}')`:`openSpaceForm('${x.id}')`}">Open ${esc(x.type)}</button></div></div>`).join('')||'<p>No tools or spaces yet.</p>'}</section>
     <section class="card"><h3>Maintenance Safety / Lockout Gaps</h3>${pmSafetyGaps.map(m=>`<div class="alert ${overdue(m.nextDue)||soon(m.nextDue,30)?'critical':'warn'}"><div><strong>${esc(m.title)}</strong><p>${esc(m.frequency)} • ${esc(m.targetType)}: ${esc(targetName(m.targetType,m.targetId))} • due ${esc(m.nextDue||'unset')} • add safety/lockout notes.</p></div><div class="alert-actions"><button class="btn small" onclick="openMaintenanceForm('${m.id}')">Open PM</button></div></div>`).join('')||'<p>No maintenance safety/lockout gaps detected.</p>'}</section>
-  </div>`;
+  </div>
+  <section class="card material-safety-ledger" style="margin-top:16px"><h3>Material Safety / SDS Ledger</h3><p class="mini">Compact inventory safety ledger for large material libraries. Use search to narrow the table; print the SDS Library from the toolbar when a full report is needed.</p><div class="table-wrap sds-table"><table><thead><tr><th>Item</th><th>Category</th><th>SDS</th><th>Hazards</th><th>PPE</th><th>Storage</th><th>Safety Notes</th><th></th></tr></thead><tbody>${materialRows.map(it=>{const sdsStatus=it.sdsUrl?'Linked':v56IsHazardousMaterial(it)?'Missing':'Not required'; const rowClass=v56IsHazardousMaterial(it)&&!it.sdsUrl?'critical':v56IsHazardousMaterial(it)&&(!it.ppe||!it.storage)?'warn':'good'; return `<tr><td><strong>${esc(it.name)}</strong><br><span class="mini">${esc(it.location||'location unset')}</span></td><td>${esc(it.category||'Material')}</td><td>${badge(sdsStatus,rowClass==='critical'?'critical':it.sdsUrl?'good':'')}</td><td>${esc(it.hazards||'—')}</td><td>${esc(it.ppe||'unset')}</td><td>${esc(it.storage||'unset')}</td><td>${esc(it.safetyNotes||'—')}</td><td><button class="btn small" onclick="openItemForm('${it.id}')">Edit</button></td></tr>`}).join('')||'<tr><td colspan="8">No inventory items yet.</td></tr>'}</tbody></table></div></section>`;
 }
 const __v56OpenProjectFormBase = openProjectForm;
 openProjectForm = function(id=null){
@@ -3139,8 +3140,8 @@ render = function(){
     const route = V59_ROUTES.find(r=>r[0]===ui.view); if(route){$('pageTitle').textContent=route[1]; $('pageLead').textContent=v59LeadFor(ui.view)||route[2];}
     const vb=$('versionBadge'); if(vb) vb.textContent=`v${VERSION} Project Core`;
   }
-  const footer=document.querySelector('.footer'); if(footer) footer.textContent='SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.3.';
-  document.title='SHOP FLOOR v5.9.3 | Scoping to Project';
+  const footer=document.querySelector('.footer'); if(footer) footer.textContent='SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.5.';
+  document.title='SHOP FLOOR v5.9.5 | Scoping to Project';
   state.schema=5.9; state.version=VERSION;
 };
 function renderScoping(){
@@ -3199,6 +3200,81 @@ const __v59SettingsBase = renderSettings;
 renderSettings = function(){ensureModelV59(false); const html=__v59SettingsBase(); return html.replace('SHOP FLOOR v5.8 is a print-quality pass. Print Center now has explicit scopes, clean document templates, stronger preview parity, and separate item, batch, and report outputs.','SHOP FLOOR v5.9 adds a Scoping stage before Projects. Capture client requirements, assumptions, rough estimates, delivery targets, materials, tools, spaces, people, and risks, then convert an approved scope into a project.');};
 const __v59LoadSampleBase = loadSampleData;
 loadSampleData = function(confirmFirst=false){if(confirmFirst && !confirm('Replace current local data with sample SHOP FLOOR v5.9.1 data?')) return; state=sampleState(); ensureModelV59(false); save(); render();};
+
+
+/* ===== SHOP FLOOR v5.9.5: Compact searchable/sortable inventory ledger ===== */
+function v595InjectInventoryStyles(){
+  if(document.getElementById('v595InventoryStyles')) return;
+  const css = document.createElement('style');
+  css.id = 'v595InventoryStyles';
+  css.textContent = `
+    .ledger-controls{display:grid;grid-template-columns:2fr repeat(4,minmax(150px,1fr));gap:10px;align-items:end;margin:12px 0}
+    .ledger-controls label{font-size:.78rem;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+    .ledger-controls input,.ledger-controls select{width:100%;min-height:40px;padding:8px 10px;border-radius:14px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font:inherit;font-weight:800}
+    .compact-ledger table{font-size:.88rem}
+    .compact-ledger th{position:sticky;top:0;z-index:2;background:var(--panel);cursor:pointer;user-select:none;white-space:nowrap}
+    .compact-ledger th.no-sort{cursor:default}
+    .compact-ledger td{padding:8px 10px;vertical-align:middle}
+    .compact-ledger .item-main{font-weight:950;line-height:1.1}.compact-ledger .item-meta{font-size:.76rem;color:var(--muted);font-weight:800;line-height:1.2;margin-top:2px}
+    .compact-ledger .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}.compact-ledger .actions{white-space:nowrap;text-align:right}
+    .compact-ledger .badge{font-size:.72rem;padding:3px 7px}.sort-caret{opacity:.75;font-size:.75rem;margin-left:4px}
+    .inventory-ledger-summary{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}.inventory-ledger-summary .pill{border:1px solid var(--line);border-radius:999px;padding:6px 10px;background:var(--panel2);font-weight:900;color:var(--text)}
+    @media(max-width:900px){.ledger-controls{grid-template-columns:1fr 1fr}.ledger-controls .wide{grid-column:1/-1}.compact-ledger table{min-width:980px}}
+  `;
+  document.head.appendChild(css);
+}
+function invUi(){
+  ui.inventory = ui.inventory || { q:'', category:'all', safety:'all', stock:'all', vendor:'all', sort:'name', dir:'asc' };
+  return ui.inventory;
+}
+function inventorySafetyStatus(it){ return it.sdsUrl ? 'SDS linked' : ((it.hazards||it.safetyNotes||it.ppe||it.storage) ? 'SDS needed' : 'Standard'); }
+function inventoryStockStatus(it){ const av=availableQty(it.id); if(av<=0) return 'out'; if(av<=n(it.reorder)) return 'low'; return 'ok'; }
+function inventorySortValue(it,key){
+  const committed=requiredByProjectsQty(it.id), avail=availableQty(it.id), safety=inventorySafetyStatus(it), stock=inventoryStockStatus(it);
+  const map={name:it.name,category:it.category,onHand:n(it.onHand),committed,available:avail,reorder:n(it.reorder),unitCost:n(it.unitCost),vendor:it.vendor,location:it.location,safety,stock};
+  return map[key] ?? it.name;
+}
+function setInventoryFilter(key,value){ const f=invUi(); f[key]=value; render(); }
+function setInventorySort(key){ const f=invUi(); if(f.sort===key) f.dir=f.dir==='asc'?'desc':'asc'; else {f.sort=key; f.dir='asc';} render(); }
+function inventoryHeader(label,key,cls='') { const f=invUi(); const caret=f.sort===key ? `<span class="sort-caret">${f.dir==='asc'?'▲':'▼'}</span>` : ''; return `<th class="${cls}" onclick="setInventorySort('${key}')">${label}${caret}</th>`; }
+function filteredInventoryItems(){
+  const f=invUi(); const q=(f.q||'').toLowerCase().trim();
+  let items=[...(state.inventory||[])];
+  items=items.filter(it=>{
+    const safety=inventorySafetyStatus(it), stock=inventoryStockStatus(it);
+    if(f.category!=='all' && (it.category||'Uncategorized')!==f.category) return false;
+    if(f.safety!=='all' && safety!==f.safety) return false;
+    if(f.stock!=='all' && stock!==f.stock) return false;
+    if(f.vendor!=='all' && (it.vendor||'Unset')!==f.vendor) return false;
+    if(q && ![it.name,it.category,it.vendor,it.location,it.unit,it.sdsUrl,it.hazards,it.ppe,it.storage,it.safetyNotes,(it.tags||[]).join(' ')].join(' ').toLowerCase().includes(q)) return false;
+    return matchesSearch(it.name,it.category,it.vendor,it.location,it.tags?.join(' '));
+  });
+  items.sort((a,b)=>{let av=inventorySortValue(a,f.sort), bv=inventorySortValue(b,f.sort); if(typeof av==='number'||typeof bv==='number'){av=n(av);bv=n(bv);return f.dir==='asc'?av-bv:bv-av;} av=String(av||'').toLowerCase(); bv=String(bv||'').toLowerCase(); return f.dir==='asc'?av.localeCompare(bv):bv.localeCompare(av);});
+  return items;
+}
+function renderInventory(){
+  v595InjectInventoryStyles(); const f=invUi(); const all=state.inventory||[]; const items=filteredInventoryItems();
+  const categories=['all',...Array.from(new Set(all.map(it=>it.category||'Uncategorized'))).sort()];
+  const vendors=['all',...Array.from(new Set(all.map(it=>it.vendor||'Unset'))).sort()];
+  const totalValue=all.reduce((a,it)=>a+n(it.onHand)*n(it.unitCost),0);
+  const low=all.filter(it=>inventoryStockStatus(it)==='low').length, out=all.filter(it=>inventoryStockStatus(it)==='out').length, sdsNeeded=all.filter(it=>inventorySafetyStatus(it)==='SDS needed').length;
+  return `<div class="metric-row"><div class="metric"><b>${all.length}</b><span>inventory items</span></div><div class="metric"><b>${out}</b><span>zero or negative available</span></div><div class="metric"><b>${low}</b><span>low after commitments</span></div><div class="metric"><b>${fmtMoney(totalValue)}</b><span>stock value on hand</span></div></div>
+  <div class="toolbar"><button class="btn primary" onclick="openItemForm()">Add Inventory Item</button><button class="btn" onclick="openStockTransaction()">Stock Transaction</button><button class="btn" onclick="setView('shopping')">Shopping List</button><button class="btn" onclick="setView('safety')">Safety Center</button><button class="btn" onclick="printReport('inventory')">Print Inventory</button></div>
+  <section class="card"><h3>Inventory Ledger</h3><p>Compact ledger view for real shop use. Search, filter, and sort the table. Available means on hand minus active project commitments.</p>
+    <div class="ledger-controls">
+      <div class="wide"><label>Search inventory</label><input value="${esc(f.q)}" placeholder="Search item, category, vendor, location, SDS, PPE, hazards, tags..." oninput="setInventoryFilter('q', this.value)"></div>
+      <div><label>Category</label><select onchange="setInventoryFilter('category', this.value)">${categories.map(c=>`<option value="${esc(c)}" ${f.category===c?'selected':''}>${esc(c==='all'?'All categories':c)}</option>`).join('')}</select></div>
+      <div><label>Stock status</label><select onchange="setInventoryFilter('stock', this.value)">${[['all','All stock'],['out','Out / overcommitted'],['low','Low'],['ok','OK']].map(([v,l])=>`<option value="${v}" ${f.stock===v?'selected':''}>${l}</option>`).join('')}</select></div>
+      <div><label>Safety</label><select onchange="setInventoryFilter('safety', this.value)">${['all','SDS linked','SDS needed','Standard'].map(v=>`<option value="${v}" ${f.safety===v?'selected':''}>${esc(v==='all'?'All safety':v)}</option>`).join('')}</select></div>
+      <div><label>Vendor</label><select onchange="setInventoryFilter('vendor', this.value)">${vendors.map(v=>`<option value="${esc(v)}" ${f.vendor===v?'selected':''}>${esc(v==='all'?'All vendors':v)}</option>`).join('')}</select></div>
+    </div>
+    <div class="inventory-ledger-summary"><span class="pill">Showing ${items.length} of ${all.length}</span><span class="pill">SDS needed: ${sdsNeeded}</span><span class="pill">Reserved units: ${all.reduce((a,it)=>a+requiredByProjectsQty(it.id),0)}</span></div>
+    <div class="table-wrap compact-ledger"><table><thead><tr>${inventoryHeader('Item','name')}${inventoryHeader('Category','category')}${inventoryHeader('On Hand','onHand','num')}${inventoryHeader('Committed','committed','num')}${inventoryHeader('Available','available','num')}${inventoryHeader('Reorder','reorder','num')}${inventoryHeader('Unit Cost','unitCost','num')}${inventoryHeader('Vendor','vendor')}${inventoryHeader('Location','location')}${inventoryHeader('Safety','safety')}<th class="no-sort actions">Actions</th></tr></thead><tbody>${items.map(it=>{const committed=requiredByProjectsQty(it.id), avail=availableQty(it.id), safety=inventorySafetyStatus(it), cls=avail<=0?'critical':avail<=n(it.reorder)?'warn':'good'; return `<tr><td><div class="item-main">${esc(it.name)}</div><div class="item-meta">${esc(it.unit||'unit')} ${it.tags?.length?'• '+it.tags.map(t=>'#'+esc(t)).join(' '):''}</div></td><td>${esc(it.category||'Uncategorized')}</td><td class="num">${n(it.onHand)} ${esc(it.unit)}</td><td class="num">${committed}</td><td class="num">${badge(`${avail} ${it.unit||''}`, cls)}</td><td class="num">${n(it.reorder)}</td><td class="num">${fmtMoney(it.unitCost)}</td><td>${esc(it.vendor||'Unset')}</td><td>${esc(it.location||'Unset')}</td><td>${badge(safety, safety==='SDS needed'?'warn':safety==='SDS linked'?'good':'')}</td><td class="actions"><button class="btn small" onclick="openItemForm('${it.id}')">Edit</button><button class="btn small" onclick="addShoppingForProjectItem('', '${it.id}', ${suggestedBuyQty(it,1)}, 'Inventory stock build')">Buy</button><button class="btn small" onclick="printInventoryLabel('${it.id}')">Label</button></td></tr>`;}).join('') || `<tr><td colspan="11">No inventory items match the current filters.</td></tr>`}</tbody></table></div>
+  </section>`;
+}
+const __v595RenderBase = render;
+render = function(){ __v595RenderBase(); v595InjectInventoryStyles(); const footer=document.querySelector('.footer'); if(footer) footer.textContent='SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.5.'; document.title='SHOP FLOOR v5.9.5 | Scoping to Project'; const vb=$('versionBadge'); if(vb) vb.textContent=`v${VERSION} Project Core`; };
+
 ensureModelV59(true); render(); save();
 </script>
 </body>
