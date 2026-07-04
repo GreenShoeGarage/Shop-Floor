@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SHOP FLOOR v5.9.5 | Scoping to Project</title>
+<title>SHOP FLOOR v5.9.6 | Scoping to Project</title>
 <style>
 :root{
   --bg:#f6f1e8; --panel:#fffaf0; --panel2:#efe8d8; --panel3:#fff6da; --ink:#182126; --muted:#5a666d;
@@ -166,7 +166,7 @@ table{width:100%; border-collapse:collapse; min-width:700px;} th,td{text-align:l
 <body data-theme="dark">
 <div class="app-shell" id="shell">
   <aside class="sidebar">
-    <div class="brand"><div class="mark">SF</div><div><h1>SHOP<br>FLOOR</h1><span class="version" id="versionBadge">v5.9.5 Project Core</span></div></div>
+    <div class="brand"><div class="mark">SF</div><div><h1>SHOP<br>FLOOR</h1><span class="version" id="versionBadge">v5.9.6 Project Core</span></div></div>
     <p class="side-note">Project-centered shop management for a small tradigital team. Plan the work, prove readiness, protect people, buy what is missing, and keep machines healthy.</p>
     <nav class="nav" id="nav"></nav>
     <div class="side-tools">
@@ -186,13 +186,13 @@ table{width:100%; border-collapse:collapse; min-width:700px;} th,td{text-align:l
       <div class="quick-search"><input id="globalSearch" placeholder="Search projects, inventory, tools, spaces, JHAs, recipes, people, tasks, vendors, tags..." oninput="setSearch(this.value)" /></div>
     </div>
     <section id="app"></section>
-    <div class="footer">SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.5.</div>
+    <div class="footer">SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.6.</div>
   </main>
 </div>
 <div id="modalBackdrop" class="modal-backdrop" onclick="if(event.target.id==='modalBackdrop') closeModal()"><div class="modal" id="modal"></div></div>
 <div id="printArea"></div>
 <script>
-const VERSION = '5.9.5';
+const VERSION = '5.9.6';
 const STORAGE_KEY = 'shopFloorProjectCoreV5';
 const LEGACY_KEYS = ['shopFloorOperatingBoardV4','shopFloorV4','shopFloorData','shopFloorProjectCoreV5'];
 const PHASES = ['Idea','Planning','Design','Prep','Fabrication','Assembly','Test','Documentation','Complete'];
@@ -3140,8 +3140,8 @@ render = function(){
     const route = V59_ROUTES.find(r=>r[0]===ui.view); if(route){$('pageTitle').textContent=route[1]; $('pageLead').textContent=v59LeadFor(ui.view)||route[2];}
     const vb=$('versionBadge'); if(vb) vb.textContent=`v${VERSION} Project Core`;
   }
-  const footer=document.querySelector('.footer'); if(footer) footer.textContent='SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.5.';
-  document.title='SHOP FLOOR v5.9.5 | Scoping to Project';
+  const footer=document.querySelector('.footer'); if(footer) footer.textContent='SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.6.';
+  document.title='SHOP FLOOR v5.9.6 | Scoping to Project';
   state.schema=5.9; state.version=VERSION;
 };
 function renderScoping(){
@@ -3202,7 +3202,7 @@ const __v59LoadSampleBase = loadSampleData;
 loadSampleData = function(confirmFirst=false){if(confirmFirst && !confirm('Replace current local data with sample SHOP FLOOR v5.9.1 data?')) return; state=sampleState(); ensureModelV59(false); save(); render();};
 
 
-/* ===== SHOP FLOOR v5.9.5: Compact searchable/sortable inventory ledger ===== */
+/* ===== SHOP FLOOR v5.9.6: Compact searchable/sortable inventory ledger ===== */
 function v595InjectInventoryStyles(){
   if(document.getElementById('v595InventoryStyles')) return;
   const css = document.createElement('style');
@@ -3273,8 +3273,112 @@ function renderInventory(){
   </section>`;
 }
 const __v595RenderBase = render;
-render = function(){ __v595RenderBase(); v595InjectInventoryStyles(); const footer=document.querySelector('.footer'); if(footer) footer.textContent='SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.5.'; document.title='SHOP FLOOR v5.9.5 | Scoping to Project'; const vb=$('versionBadge'); if(vb) vb.textContent=`v${VERSION} Project Core`; };
+render = function(){ __v595RenderBase(); v595InjectInventoryStyles(); const footer=document.querySelector('.footer'); if(footer) footer.textContent='SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.6.'; document.title='SHOP FLOOR v5.9.6 | Scoping to Project'; const vb=$('versionBadge'); if(vb) vb.textContent=`v${VERSION} Project Core`; };
 
+ensureModelV59(true); render(); save();
+
+
+/* ===== SHOP FLOOR v5.9.6: Universal searchable / filterable / sortable tables ===== */
+function v596InjectTableStyles(){
+  if(document.getElementById('v596TableStyles')) return;
+  const css=document.createElement('style'); css.id='v596TableStyles'; css.textContent=`
+    .smart-table-card{overflow:hidden}.smart-table-controls{display:grid;grid-template-columns:2fr repeat(auto-fit,minmax(150px,1fr));gap:10px;align-items:end;margin:12px 0}.smart-table-controls label{font-size:.76rem;font-weight:950;color:var(--muted);text-transform:uppercase;letter-spacing:.045em}.smart-table-controls input,.smart-table-controls select{width:100%;min-height:40px;padding:8px 10px;border-radius:14px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font:inherit;font-weight:850}.smart-table-controls .wide{min-width:240px}.smart-table-summary{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}.smart-table-summary .pill{border:1px solid var(--line);border-radius:999px;padding:6px 10px;background:var(--panel2);color:var(--text);font-weight:950}.smart-table th{position:sticky;top:0;z-index:2;background:var(--panel);cursor:pointer;user-select:none;white-space:nowrap}.smart-table th.no-sort{cursor:default}.smart-table td{padding:8px 10px;vertical-align:top}.smart-table .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}.smart-table .actions{text-align:right;white-space:nowrap}.smart-table .primary-cell{font-weight:950;line-height:1.15}.smart-table .cell-note{font-size:.76rem;color:var(--muted);font-weight:800;line-height:1.25;margin-top:2px}.smart-table .badge{font-size:.72rem;padding:3px 7px}.sort-caret{opacity:.75;font-size:.72rem;margin-left:4px}.smart-table-reset{padding:8px 10px!important;min-height:40px}.smart-table-empty{padding:18px!important;color:var(--muted);font-weight:900;text-align:center}
+    @media(max-width:900px){.smart-table-controls{grid-template-columns:1fr 1fr}.smart-table-controls .wide{grid-column:1/-1}.smart-table{min-width:1000px}}
+  `; document.head.appendChild(css);
+}
+function v596TableState(key){ui.tables=ui.tables||{}; ui.tables[key]=ui.tables[key]||{q:'',filters:{},sort:'',dir:'asc'}; return ui.tables[key];}
+function v596SetTableQuery(key,val){v596TableState(key).q=val; render();}
+function v596SetTableFilter(key,f,val){v596TableState(key).filters[f]=val; render();}
+function v596SetTableSort(key,sort){const st=v596TableState(key); if(st.sort===sort) st.dir=st.dir==='asc'?'desc':'asc'; else{st.sort=sort; st.dir='asc';} render();}
+function v596ResetTable(key){ui.tables=ui.tables||{}; delete ui.tables[key]; render();}
+function v596Cell(row,col){try{if(col.html) return col.html(row); const v=col.value?col.value(row):row[col.key]; return esc(v??'');}catch(e){return '';}}
+function v596SortVal(row,col){try{let v=col.sortValue?col.sortValue(row):(col.value?col.value(row):row[col.key]); return v??'';}catch(e){return '';}}
+function v596FilterVal(row,col){try{return col.filterValue?col.filterValue(row):(col.value?col.value(row):row[col.key]);}catch(e){return '';}}
+function v596SearchText(row,cols){let parts=[]; if(row.searchText) parts.push(row.searchText); cols.forEach(c=>{if(c.search!==false) parts.push(String(v596FilterVal(row,c)??''));}); return parts.join(' ').toLowerCase();}
+function v596SmartTable(key, title, rows, cols, opts={}){
+  v596InjectTableStyles(); const st=v596TableState(key); if(!st.sort){const first=cols.find(c=>c.sort!==false); st.sort=first?.key||'';}
+  let visible=[...rows]; const q=(st.q||'').toLowerCase().trim();
+  const filterCols=cols.filter(c=>c.filter);
+  if(q) visible=visible.filter(r=>v596SearchText(r,cols).includes(q));
+  filterCols.forEach(c=>{const val=st.filters[c.key]||'all'; if(val!=='all') visible=visible.filter(r=>String(v596FilterVal(r,c)||'Unset')===val);});
+  const sortCol=cols.find(c=>c.key===st.sort);
+  if(sortCol) visible.sort((a,b)=>{let av=v596SortVal(a,sortCol), bv=v596SortVal(b,sortCol); if(typeof av==='number'||typeof bv==='number'){av=n(av); bv=n(bv); return st.dir==='asc'?av-bv:bv-av;} av=String(av||'').toLowerCase(); bv=String(bv||'').toLowerCase(); return st.dir==='asc'?av.localeCompare(bv):bv.localeCompare(av);});
+  const controls=`<div class="smart-table-controls"><div class="wide"><label>Search ${esc(title)}</label><input value="${esc(st.q||'')}" placeholder="Search this table..." oninput="v596SetTableQuery('${key}', this.value)"></div>${filterCols.map(c=>{const values=Array.from(new Set(rows.map(r=>String(v596FilterVal(r,c)||'Unset')))).sort(); const cur=st.filters[c.key]||'all'; return `<div><label>${esc(c.label)}</label><select onchange="v596SetTableFilter('${key}','${c.key}',this.value)"><option value="all">All ${esc(c.label.toLowerCase())}</option>${values.map(v=>`<option value="${esc(v)}" ${cur===v?'selected':''}>${esc(v)}</option>`).join('')}</select></div>`;}).join('')}<div><label>Controls</label><button class="btn smart-table-reset" onclick="v596ResetTable('${key}')">Reset</button></div></div>`;
+  const summary=`<div class="smart-table-summary"><span class="pill">Showing ${visible.length} of ${rows.length}</span>${opts.summary||''}</div>`;
+  const th=cols.map(c=>`<th class="${c.sort===false?'no-sort':''} ${c.className||''}" ${c.sort===false?'':`onclick="v596SetTableSort('${key}','${c.key}')"`}>${esc(c.label)}${st.sort===c.key?`<span class="sort-caret">${st.dir==='asc'?'▲':'▼'}</span>`:''}</th>`).join('');
+  const body=visible.map(r=>`<tr>${cols.map(c=>`<td class="${c.className||''}">${v596Cell(r,c)}</td>`).join('')}</tr>`).join('') || `<tr><td class="smart-table-empty" colspan="${cols.length}">No rows match the current search and filters.</td></tr>`;
+  return `<section class="card smart-table-card"><h3>${esc(title)}</h3>${opts.description?`<p>${esc(opts.description)}</p>`:''}${controls}${summary}<div class="table-wrap"><table class="smart-table"><thead><tr>${th}</tr></thead><tbody>${body}</tbody></table></div></section>`;
+}
+function v596StatusClass(level){return level==='critical'||level==='Expired'||level==='Out / overcommitted'?'critical':level==='warn'||level==='Low'||level==='Expiring soon'?'warn':level==='good'||level==='Current'||level==='OK'?'good':'';}
+function v596SafetyStatus(it){return inventorySafetyStatus ? inventorySafetyStatus(it) : (it.sdsUrl?'SDS linked':(it.hazards||it.safetyNotes?'SDS needed':'Standard'));}
+function v596StockStatusLabel(it){const av=availableQty(it.id); if(av<=0) return 'Out / overcommitted'; if(av<=n(it.reorder)) return 'Low'; return 'OK';}
+
+function renderInventory(){
+  v596InjectTableStyles(); const all=state.inventory||[]; const totalValue=all.reduce((a,it)=>a+n(it.onHand)*n(it.unitCost),0); const out=all.filter(it=>availableQty(it.id)<=0).length; const low=all.filter(it=>availableQty(it.id)>0&&availableQty(it.id)<=n(it.reorder)).length;
+  const rows=all.map(it=>({it, name:it.name, category:it.category||'Uncategorized', onHand:n(it.onHand), committed:requiredByProjectsQty(it.id), available:availableQty(it.id), reorder:n(it.reorder), unitCost:n(it.unitCost), vendor:it.vendor||'Unset', location:it.location||'Unset', safety:v596SafetyStatus(it), stock:v596StockStatusLabel(it), searchText:[it.name,it.category,it.vendor,it.location,it.unit,it.sdsUrl,it.hazards,it.ppe,it.storage,it.safetyNotes,(it.tags||[]).join(' ')].join(' ')}));
+  const cols=[
+    {key:'name',label:'Item',html:r=>`<div class="primary-cell">${esc(r.it.name)}</div><div class="cell-note">${esc(r.it.unit||'unit')} ${(r.it.tags||[]).map(t=>'#'+esc(t)).join(' ')}</div>`},
+    {key:'category',label:'Category',filter:true,value:r=>r.category},
+    {key:'onHand',label:'On Hand',className:'num',sortValue:r=>r.onHand,html:r=>`${r.onHand} ${esc(r.it.unit||'')}`},
+    {key:'committed',label:'Committed',className:'num',sortValue:r=>r.committed,html:r=>`${r.committed} ${esc(r.it.unit||'')}`},
+    {key:'available',label:'Available',className:'num',sortValue:r=>r.available,html:r=>badge(`${r.available} ${r.it.unit||''}`, r.available<=0?'critical':r.available<=n(r.it.reorder)?'warn':'good')},
+    {key:'stock',label:'Stock',filter:true,html:r=>badge(r.stock, v596StatusClass(r.stock))},
+    {key:'reorder',label:'Reorder',className:'num',sortValue:r=>r.reorder,value:r=>r.reorder},
+    {key:'unitCost',label:'Unit Cost',className:'num',sortValue:r=>r.unitCost,html:r=>fmtMoney(r.unitCost)},
+    {key:'vendor',label:'Vendor',filter:true,value:r=>r.vendor},
+    {key:'location',label:'Location',filter:true,value:r=>r.location},
+    {key:'safety',label:'Safety',filter:true,html:r=>badge(r.safety, r.safety==='SDS needed'?'warn':r.safety==='SDS linked'?'good':'')},
+    {key:'actions',label:'Actions',sort:false,className:'actions',html:r=>`<button class="btn small" onclick="openItemForm('${r.it.id}')">Edit</button><button class="btn small" onclick="addShoppingForProjectItem('', '${r.it.id}', ${suggestedBuyQty(r.it,1)}, 'Inventory stock build')">Buy</button><button class="btn small" onclick="printInventoryLabel('${r.it.id}')">Label</button>`}
+  ];
+  return `<div class="metric-row"><div class="metric"><b>${all.length}</b><span>inventory items</span></div><div class="metric"><b>${out}</b><span>zero or negative available</span></div><div class="metric"><b>${low}</b><span>low after commitments</span></div><div class="metric"><b>${fmtMoney(totalValue)}</b><span>stock value on hand</span></div></div><div class="toolbar"><button class="btn primary" onclick="openItemForm()">Add Inventory Item</button><button class="btn" onclick="openStockTransaction()">Stock Transaction</button><button class="btn" onclick="setView('shopping')">Shopping List</button><button class="btn" onclick="setView('safety')">Safety Center</button><button class="btn" onclick="printReport('inventory')">Print Inventory</button></div>` + v596SmartTable('inventory','Inventory Ledger',rows,cols,{description:'Search, filter, and sort the shop inventory. Available means on hand minus active project commitments.',summary:`<span class="pill">Reserved units: ${all.reduce((a,it)=>a+requiredByProjectsQty(it.id),0)}</span>`});
+}
+
+function renderPeople(){
+  ensureModelV52(false); const people=state.people||[]; const authRows=people.flatMap(p=>personAuthz(p).map(a=>{const current=authorizationCurrent(a), expiring=current&&soon(a.expires,30); return {person:p,auth:a,name:p.name,role:p.role||'Unset',target:authTargetName(a),type:a.targetType,expires:a.expires||'No expiration',status:!current?'Expired':expiring?'Expiring soon':'Current',searchText:[p.name,p.role,(p.skills||[]).join(' '),authTargetName(a),a.targetType,a.notes].join(' ')}}));
+  const personRows=people.map(p=>({p,name:p.name,role:p.role||'Unset',skills:(p.skills||[]).join(', '),general:personTrainingOK(p)?'Current':'Expired',expired:personAuthz(p).filter(a=>!authorizationCurrent(a)).length,searchText:[p.name,p.role,(p.skills||[]).join(' '),p.notes,(p.tags||[]).join(' ')].join(' ')}));
+  const personCols=[{key:'name',label:'Person',html:r=>`<div class="primary-cell">${esc(r.name)}</div><div class="cell-note">${esc(r.skills||'No skills listed')}</div>`},{key:'role',label:'Role',filter:true,value:r=>r.role},{key:'general',label:'General Safety',filter:true,html:r=>badge(r.general,r.general==='Expired'?'critical':'good')},{key:'expired',label:'Expired Auths',className:'num',sortValue:r=>r.expired,html:r=>badge(String(r.expired),r.expired?'critical':'good')},{key:'actions',label:'Actions',sort:false,className:'actions',html:r=>`<button class="btn small" onclick="openPersonForm('${r.p.id}')">Edit</button>`}];
+  const authCols=[{key:'name',label:'Person',filter:true,value:r=>r.name},{key:'role',label:'Role',filter:true,value:r=>r.role},{key:'target',label:'Authorized Item',value:r=>r.target},{key:'type',label:'Type',filter:true,value:r=>r.type},{key:'expires',label:'Expiration',sortValue:r=>r.auth.expires||'9999-12-31',value:r=>r.expires},{key:'status',label:'Status',filter:true,html:r=>badge(r.status,v596StatusClass(r.status))},{key:'actions',label:'Actions',sort:false,className:'actions',html:r=>`<button class="btn small" onclick="openPersonForm('${r.person.id}')">Edit</button>`}];
+  return `<div class="metric-row"><div class="metric"><b>${people.length}</b><span>team members</span></div><div class="metric"><b>${people.filter(personTrainingOK).length}</b><span>general safety current</span></div><div class="metric"><b>${expiredAuthorizations().length}</b><span>expired authorizations</span></div><div class="metric"><b>${expiringAuthorizations(30).length}</b><span>expiring in 30 days</span></div></div><div class="toolbar"><button class="btn primary" onclick="openPersonForm()">Add Person</button><button class="btn" onclick="setView('safety')">Safety Center</button><button class="btn" onclick="printReport('expiredAuth')">Print Expired Authorizations</button></div><div class="grid cols-1">${v596SmartTable('people','People Ledger',personRows,personCols,{description:'Search, filter, and sort team members.'})}${v596SmartTable('authorizations','Authorization Ledger',authRows,authCols,{description:'Per-item tool and space authorizations with expiration dates.'})}</div>`;
+}
+
+function renderSafety(){
+  ensureModelV56(false); const sum=v56SafetyGateSummary(); const findings=sum.rows||[];
+  const findingRows=findings.map(r=>({r,title:r.title,category:r.category||'General',level:r.level||'',project:r.projectName||'General shop',detail:r.detail||'',searchText:[r.title,r.detail,r.category,r.projectName].join(' ')}));
+  const findingCols=[{key:'level',label:'Level',filter:true,html:r=>badge(r.level,r.level)},{key:'category',label:'Category',filter:true,value:r=>r.category},{key:'title',label:'Finding',html:r=>`<div class="primary-cell">${esc(r.title)}</div><div class="cell-note">${esc(r.detail)}</div>`},{key:'project',label:'Project',filter:true,value:r=>r.project},{key:'actions',label:'Actions',sort:false,className:'actions',html:r=>`${r.r.projectId?`<button class="btn small" onclick="selectProject('${r.r.projectId}')">Project</button>`:''}${(r.r.actions||[]).map(a=>`<button class="btn small" onclick="${a.onclick}">${esc(a.label)}</button>`).join('')}` }];
+  const authRows=(state.people||[]).flatMap(p=>personAuthz(p).map(a=>({person:p,auth:a,personName:p.name,type:a.targetType,target:authTargetName(a),expires:a.expires||'No expiration',status:!authorizationCurrent(a)?'Expired':soon(a.expires,30)?'Expiring soon':'Current',searchText:[p.name,a.targetType,authTargetName(a),a.notes].join(' ')})));
+  const authCols=[{key:'personName',label:'Person',filter:true,value:r=>r.personName},{key:'type',label:'Type',filter:true,value:r=>r.type},{key:'target',label:'Authorized Item',value:r=>r.target},{key:'expires',label:'Expiration',sortValue:r=>r.auth.expires||'9999-12-31',value:r=>r.expires},{key:'status',label:'Status',filter:true,html:r=>badge(r.status,v596StatusClass(r.status))},{key:'actions',label:'Actions',sort:false,className:'actions',html:r=>`<button class="btn small" onclick="openPersonForm('${r.person.id}')">Edit</button>`}];
+  const jhaRows=[...state.tools.map(t=>({type:'Tool',id:t.id,name:t.name,coverage:jhasFor('Tool',t.id).length?'Covered':'Missing',jhas:jhasFor('Tool',t.id).map(j=>j.title).join(', '),searchText:t.name})),...state.spaces.map(sp=>({type:'Space',id:sp.id,name:sp.name,coverage:jhasFor('Space',sp.id).length?'Covered':'Missing',jhas:jhasFor('Space',sp.id).map(j=>j.title).join(', '),searchText:sp.name}))];
+  const jhaCols=[{key:'type',label:'Type',filter:true,value:r=>r.type},{key:'name',label:'Item',value:r=>r.name},{key:'coverage',label:'Coverage',filter:true,html:r=>badge(r.coverage,r.coverage==='Missing'?'critical':'good')},{key:'jhas',label:'JHAs',value:r=>r.jhas||'None'},{key:'actions',label:'Actions',sort:false,className:'actions',html:r=>`<button class="btn small" onclick="openJHAForm(null,'${r.type}','${r.id}')">Add JHA</button><button class="btn small" onclick="${r.type==='Tool'?`openToolForm('${r.id}')`:`openSpaceForm('${r.id}')`}">Open</button>`}];
+  const matRows=(state.inventory||[]).map(it=>{const sds=it.sdsUrl?'Linked':v56IsHazardousMaterial(it)?'Missing':'Not required'; return {it,item:it.name,category:it.category||'Material',sds,hazards:it.hazards||'—',ppe:it.ppe||'unset',storage:it.storage||'unset',notes:it.safetyNotes||'—',searchText:[it.name,it.category,it.sdsUrl,it.hazards,it.ppe,it.storage,it.safetyNotes].join(' ')}});
+  const matCols=[{key:'item',label:'Item',html:r=>`<div class="primary-cell">${esc(r.item)}</div><div class="cell-note">${esc(r.it.location||'location unset')}</div>`},{key:'category',label:'Category',filter:true,value:r=>r.category},{key:'sds',label:'SDS',filter:true,html:r=>badge(r.sds,r.sds==='Missing'?'critical':r.sds==='Linked'?'good':'')},{key:'hazards',label:'Hazards',value:r=>r.hazards},{key:'ppe',label:'PPE',filter:true,value:r=>r.ppe},{key:'storage',label:'Storage',value:r=>r.storage},{key:'notes',label:'Safety Notes',value:r=>r.notes},{key:'actions',label:'Actions',sort:false,className:'actions',html:r=>`<button class="btn small" onclick="openItemForm('${r.it.id}')">Edit</button>`}];
+  return `<div class="metric-row"><div class="metric"><b>${sum.critical}</b><span>critical safety gates</span></div><div class="metric"><b>${sum.warnings}</b><span>safety warnings</span></div><div class="metric"><b>${sum.projects}</b><span>active projects affected</span></div><div class="metric"><b>${sum.sds}</b><span>SDS / material gaps</span></div></div><div class="toolbar"><button class="btn primary" onclick="openJHAForm()">Add JHA</button><button class="btn" onclick="printReport('safety')">Print Safety Gate Report</button><button class="btn" onclick="printReport('expiredAuth')">Print Expired Authorizations</button><button class="btn" onclick="printReport('materialSafety')">Print SDS Library</button></div><div class="grid cols-1">${v596SmartTable('safetyFindings','Safety Readiness Gates',findingRows,findingCols,{description:'Search, filter, and sort safety gates across projects, materials, people, JHAs, and maintenance.'})}${v596SmartTable('safetyAuth','Training & Authorization Gates',authRows,authCols)}${v596SmartTable('jhaCoverage','JHA Coverage',jhaRows,jhaCols)}${v596SmartTable('materialSafety','Material Safety / SDS Ledger',matRows,matCols,{description:'Compact ledger at the bottom for large material libraries.'})}</div>`;
+}
+
+function renderMaintenance(){
+  ensureModelV55(false); const rows=(state.maintenance||[]).map(m=>{const target=targetName(m.targetType,m.targetId)||'General shop'; const status=overdue(m.nextDue)?'Overdue':soon(m.nextDue,14)?'Due soon':m.status||'Active'; const impacted=v55MaintenanceImpactProjects(m).map(p=>p.name).join(', '); return {m,title:m.title,frequency:m.frequency||'Unset',targetType:m.targetType||'General',target,status,criticality:m.criticality||'Normal',nextDue:m.nextDue||'',lastDone:m.lastDone||'',owner:personById(m.ownerId)?.name||'Unassigned',impacted:impacted||'None',searchText:[m.title,m.frequency,m.targetType,target,m.steps,m.safety,m.notes,impacted].join(' ')}});
+  const cols=[{key:'status',label:'Status',filter:true,html:r=>badge(r.status,r.status==='Overdue'?'critical':r.status==='Due soon'?'warn':'good')},{key:'title',label:'Maintenance Item',html:r=>`<div class="primary-cell">${esc(r.title)}</div><div class="cell-note">${esc(r.m.steps||'No steps recorded')}</div>`},{key:'frequency',label:'Frequency',filter:true,value:r=>r.frequency},{key:'targetType',label:'Target Type',filter:true,value:r=>r.targetType},{key:'target',label:'Target',filter:true,value:r=>r.target},{key:'criticality',label:'Criticality',filter:true,value:r=>r.criticality},{key:'nextDue',label:'Next Due',sortValue:r=>r.nextDue||'9999-12-31',value:r=>r.nextDue||'Unset'},{key:'owner',label:'Owner',filter:true,value:r=>r.owner},{key:'impacted',label:'Impacted Projects',value:r=>r.impacted},{key:'actions',label:'Actions',sort:false,className:'actions',html:r=>`<button class="btn small" onclick="openMaintenanceForm('${r.m.id}')">Edit</button><button class="btn small" onclick="markMaintenanceDone('${r.m.id}')">Done</button>`}];
+  const due=rows.filter(r=>r.status==='Overdue'||r.status==='Due soon').length;
+  return `<div class="metric-row"><div class="metric"><b>${state.maintenance.length}</b><span>maintenance items</span></div><div class="metric"><b>${due}</b><span>due soon / overdue</span></div><div class="metric"><b>${rows.filter(r=>r.impacted!=='None').length}</b><span>affecting projects</span></div><div class="metric"><b>${rows.filter(r=>!String(r.m.safety||'').trim()).length}</b><span>missing lockout notes</span></div></div><div class="toolbar"><button class="btn primary" onclick="openMaintenanceForm()">Add Maintenance</button><button class="btn" onclick="printReport('maintenanceDue')">Print Due</button><button class="btn" onclick="printReport('maintenanceSchedule')">Print Schedule</button><button class="btn" onclick="printReport('maintenanceImpact')">Print Impact</button></div>${renderMaintenanceImpactPanel()}${v596SmartTable('maintenance','Maintenance Schedule Ledger',rows,cols,{description:'Daily, weekly, monthly, quarterly, and yearly maintenance for tools, spaces, and the general shop.'})}`;
+}
+
+function renderSchedule(){
+  ensureModelV57(false); const rows=(typeof v57ScheduleRowsWithMaintenance !== 'undefined' ? v57ScheduleRowsWithMaintenance() : state.schedule||[]); const conflicts=scheduleConflicts(); const baseRows=rows.map(s=>({s,date:s.date||'',time:`${s.startTime||''}${s.endTime?'–'+s.endTime:''}`,type:s.type||'Schedule',title:s.title||'',project:projectById(s.projectId)?.name||'General shop',tool:toolById(s.toolId)?.name||'',space:spaceById(s.spaceId)?.name||'',person:personById(s.personId)?.name||'',material:itemById(s.itemId)?.name||'',status:s.status||'Planned',conflict:v57ConflictClassForSchedule(s).includes('critical')?'Conflict':v57ConflictClassForSchedule(s)?'Warning':'OK',searchText:[s.title,s.type,s.status,s.notes,projectById(s.projectId)?.name,toolById(s.toolId)?.name,spaceById(s.spaceId)?.name,personById(s.personId)?.name,itemById(s.itemId)?.name].join(' ')}));
+  const cols=[{key:'date',label:'Date',sortValue:r=>r.date||'9999-12-31',html:r=>`${esc(r.date)}${r.s.endDate?`<div class="cell-note">to ${esc(r.s.endDate)}</div>`:''}`},{key:'time',label:'Time',value:r=>r.time},{key:'type',label:'Type',filter:true,value:r=>r.type},{key:'title',label:'Title',html:r=>`<div class="primary-cell">${esc(r.title)}</div><div class="cell-note">${esc(r.s.notes||'')}</div>`},{key:'project',label:'Project',filter:true,value:r=>r.project},{key:'tool',label:'Tool',filter:true,value:r=>r.tool||'None'},{key:'space',label:'Space',filter:true,value:r=>r.space||'None'},{key:'person',label:'Person',filter:true,value:r=>r.person||'None'},{key:'material',label:'Material',filter:true,value:r=>r.material||'None'},{key:'status',label:'Status',filter:true,html:r=>badge(r.status,r.conflict==='Conflict'?'critical':r.conflict==='Warning'?'warn':'')},{key:'conflict',label:'Conflict',filter:true,html:r=>badge(r.conflict,r.conflict==='Conflict'?'critical':r.conflict==='Warning'?'warn':'good')},{key:'actions',label:'Actions',sort:false,className:'actions',html:r=>`<button class="btn small" onclick="${r.s.maintenanceId?`openMaintenanceForm('${r.s.maintenanceId}')`:`openScheduleForm('${r.s.id}')`}">Edit</button>`}];
+  return `<div class="metric-row"><div class="metric"><b>${rows.length}</b><span>scheduled items</span></div><div class="metric"><b>${rows.filter(r=>overdue(r.date)&&r.status!=='Done').length}</b><span>overdue</span></div><div class="metric"><b>${rows.filter(r=>soon(r.date,14)&&r.status!=='Done').length}</b><span>due in 14 days</span></div><div class="metric"><b>${conflicts.length}</b><span>conflicts found</span></div></div>${typeof renderScheduleIntelligence!=='undefined'?renderScheduleIntelligence():''}<div class="toolbar"><button class="btn primary" onclick="openScheduleForm()">Add Schedule Item</button><button class="btn" onclick="openScheduleForm(null,'','Tool Reservation')">Reserve Tool</button><button class="btn" onclick="openScheduleForm(null,'','Space Reservation')">Reserve Space</button><button class="btn" onclick="openScheduleForm(null,'','Person Assignment')">Assign Person</button><button class="btn" onclick="openMaintenanceForm()">Add Maintenance</button><button class="btn" onclick="exportICS()">Export ICS</button><button class="btn" onclick="printReport('schedule')">Print Schedule</button></div>${v596SmartTable('schedule','Schedule Ledger',baseRows,cols,{description:'Search, filter, and sort project milestones, reservations, maintenance windows, material need-by dates, and blackouts.'})}${renderScheduleCalendarV57(rows)}`;
+}
+
+function renderShopping(){
+  ensureModelV54(false); const gen=generatedShopping(); const custom=state.shopping||[]; const openSpend=custom.filter(x=>!x.purchased).reduce((a,x)=>a+n(x.estCost),0);
+  const genRows=gen.map((s,i)=>({s,i,source:s.source||'Generated',name:s.name,qty:n(s.qty),unit:s.unit||'',vendor:s.vendor||'Unset',neededBy:s.neededBy||'',project:projectById(s.projectId)?.name||'General shop',priority:s.priority||'Normal',cost:n(s.estCost),reason:s.reason||'',searchText:[s.source,s.name,s.vendor,s.reason,projectById(s.projectId)?.name,s.priority].join(' ')}));
+  const customRows=custom.map(s=>({s,source:s.source||'Manual',name:s.name,qty:n(s.qty),unit:s.unit||'',vendor:s.vendor||'Unset',neededBy:s.neededBy||'',project:projectById(s.projectId)?.name||'General shop',priority:s.priority||'Normal',cost:n(s.estCost),status:s.received?'Received':s.purchased?'Purchased':'Open',reason:s.reason||'',searchText:[s.source,s.name,s.vendor,s.reason,projectById(s.projectId)?.name,s.priority,s.notes].join(' ')}));
+  const baseCols=[{key:'name',label:'Item',html:r=>`<div class="primary-cell">${esc(r.name)}</div><div class="cell-note">${esc(r.reason||'')}</div>`},{key:'qty',label:'Qty',className:'num',sortValue:r=>r.qty,html:r=>`${r.qty} ${esc(r.unit)}`},{key:'vendor',label:'Vendor',filter:true,value:r=>r.vendor},{key:'neededBy',label:'Needed By',sortValue:r=>r.neededBy||'9999-12-31',value:r=>r.neededBy||'Unset'},{key:'project',label:'Project',filter:true,value:r=>r.project},{key:'priority',label:'Priority',filter:true,value:r=>r.priority},{key:'cost',label:'Est Cost',className:'num',sortValue:r=>r.cost,html:r=>fmtMoney(r.cost)}];
+  const genCols=[...baseCols,{key:'source',label:'Source',filter:true,value:r=>r.source},{key:'actions',label:'Actions',sort:false,className:'actions',html:r=>`<button class="btn small" onclick="addGeneratedShopping(${r.i})">Add</button>`}];
+  const customCols=[...baseCols,{key:'status',label:'Status',filter:true,html:r=>badge(r.status,r.status==='Open'?'warn':r.status==='Received'?'good':'')},{key:'actions',label:'Actions',sort:false,className:'actions',html:r=>`<button class="btn small" onclick="openShoppingForm('${r.s.id}')">Edit</button><button class="btn small" onclick="markPurchased('${r.s.id}')">Purchased</button><button class="btn small" onclick="receiveShopping('${r.s.id}')">Receive</button>`}];
+  return `<div class="metric-row"><div class="metric"><b>${gen.length}</b><span>generated needs</span></div><div class="metric"><b>${custom.length}</b><span>custom shopping lines</span></div><div class="metric"><b>${new Set(custom.filter(x=>!x.received).map(x=>x.vendor||'Unset')).size}</b><span>open vendors</span></div><div class="metric"><b>${fmtMoney(openSpend)}</b><span>open estimated spend</span></div></div><div class="toolbar"><button class="btn primary" onclick="openShoppingForm()">Add Manual Item</button><button class="btn" onclick="addAllGeneratedShopping()">Add All New Generated</button><button class="btn" onclick="printReport('shopping')">Print Shopping List</button></div><div class="grid cols-1">${v596SmartTable('generatedShopping','Generated Shopping Needs',genRows,genCols,{description:'Generated needs explain why each line exists. Add only the lines you intend to buy.'})}${v596SmartTable('customShopping','Custom Shopping List',customRows,customCols,{description:'The active shopping list. Receive lines into inventory when purchased material arrives.'})}</div>`;
+}
+
+const __v596RenderBase = render;
+render = function(){ __v596RenderBase(); v596InjectTableStyles(); const footer=document.querySelector('.footer'); if(footer) footer.textContent='SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.6.'; document.title='SHOP FLOOR v5.9.6 | Scoping to Project'; const vb=$('versionBadge'); if(vb) vb.textContent='v5.9.6 Project Core'; };
 ensureModelV59(true); render(); save();
 </script>
 </body>
