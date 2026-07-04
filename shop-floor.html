@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SHOP FLOOR v5.9.1 | Scoping to Project</title>
+<title>SHOP FLOOR v5.9.3 | Scoping to Project</title>
 <style>
 :root{
   --bg:#f6f1e8; --panel:#fffaf0; --panel2:#efe8d8; --panel3:#fff6da; --ink:#182126; --muted:#5a666d;
@@ -165,7 +165,7 @@ table{width:100%; border-collapse:collapse; min-width:700px;} th,td{text-align:l
 <body data-theme="dark">
 <div class="app-shell" id="shell">
   <aside class="sidebar">
-    <div class="brand"><div class="mark">SF</div><div><h1>SHOP<br>FLOOR</h1><span class="version" id="versionBadge">v5.9.2 Project Core</span></div></div>
+    <div class="brand"><div class="mark">SF</div><div><h1>SHOP<br>FLOOR</h1><span class="version" id="versionBadge">v5.9.3 Project Core</span></div></div>
     <p class="side-note">Project-centered shop management for a small tradigital team. Plan the work, prove readiness, protect people, buy what is missing, and keep machines healthy.</p>
     <nav class="nav" id="nav"></nav>
     <div class="side-tools">
@@ -185,13 +185,13 @@ table{width:100%; border-collapse:collapse; min-width:700px;} th,td{text-align:l
       <div class="quick-search"><input id="globalSearch" placeholder="Search projects, inventory, tools, spaces, JHAs, recipes, people, tasks, vendors, tags..." oninput="setSearch(this.value)" /></div>
     </div>
     <section id="app"></section>
-    <div class="footer">SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.2.</div>
+    <div class="footer">SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.3.</div>
   </main>
 </div>
 <div id="modalBackdrop" class="modal-backdrop" onclick="if(event.target.id==='modalBackdrop') closeModal()"><div class="modal" id="modal"></div></div>
 <div id="printArea"></div>
 <script>
-const VERSION = '5.9.2';
+const VERSION = '5.9.3';
 const STORAGE_KEY = 'shopFloorProjectCoreV5';
 const LEGACY_KEYS = ['shopFloorOperatingBoardV4','shopFloorV4','shopFloorData','shopFloorProjectCoreV5'];
 const PHASES = ['Idea','Planning','Design','Prep','Fabrication','Assembly','Test','Documentation','Complete'];
@@ -3024,9 +3024,9 @@ ensureModelV58(true); render(); save();
 
 /* --- SHOP FLOOR v5.9.1 Scoping / Proposal Pipeline --- */
 const V59_ROUTES = [
+  ['today','Today','generated operating view'],
   ['scoping','Scoping','client requirements, estimates, proposal-to-project'],
   ['projects','Projects','requirements, readiness, cost, schedule'],
-  ['today','Today','generated operating view'],
   ['inventory','Inventory','stock, commitments, value'],
   ['tools','Tools','machines, hand tools, kits, tool JHAs'],
   ['spaces','Spaces','zones, benches, work areas, space JHAs'],
@@ -3139,8 +3139,8 @@ render = function(){
     const route = V59_ROUTES.find(r=>r[0]===ui.view); if(route){$('pageTitle').textContent=route[1]; $('pageLead').textContent=v59LeadFor(ui.view)||route[2];}
     const vb=$('versionBadge'); if(vb) vb.textContent=`v${VERSION} Project Core`;
   }
-  const footer=document.querySelector('.footer'); if(footer) footer.textContent='SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.2.';
-  document.title='SHOP FLOOR v5.9.1 | Scoping to Project';
+  const footer=document.querySelector('.footer'); if(footer) footer.textContent='SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.3.';
+  document.title='SHOP FLOOR v5.9.3 | Scoping to Project';
   state.schema=5.9; state.version=VERSION;
 };
 function renderScoping(){
