@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SHOP FLOOR v5.9.6 | Scoping to Project</title>
+<title>SHOP FLOOR v5.9.7 | Scoping to Project</title>
 <style>
 :root{
   --bg:#f6f1e8; --panel:#fffaf0; --panel2:#efe8d8; --panel3:#fff6da; --ink:#182126; --muted:#5a666d;
@@ -166,7 +166,7 @@ table{width:100%; border-collapse:collapse; min-width:700px;} th,td{text-align:l
 <body data-theme="dark">
 <div class="app-shell" id="shell">
   <aside class="sidebar">
-    <div class="brand"><div class="mark">SF</div><div><h1>SHOP<br>FLOOR</h1><span class="version" id="versionBadge">v5.9.6 Project Core</span></div></div>
+    <div class="brand"><div class="mark">SF</div><div><h1>SHOP<br>FLOOR</h1><span class="version" id="versionBadge">v5.9.7 Project Core</span></div></div>
     <p class="side-note">Project-centered shop management for a small tradigital team. Plan the work, prove readiness, protect people, buy what is missing, and keep machines healthy.</p>
     <nav class="nav" id="nav"></nav>
     <div class="side-tools">
@@ -186,13 +186,13 @@ table{width:100%; border-collapse:collapse; min-width:700px;} th,td{text-align:l
       <div class="quick-search"><input id="globalSearch" placeholder="Search projects, inventory, tools, spaces, JHAs, recipes, people, tasks, vendors, tags..." oninput="setSearch(this.value)" /></div>
     </div>
     <section id="app"></section>
-    <div class="footer">SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.6.</div>
+    <div class="footer">SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.7.</div>
   </main>
 </div>
 <div id="modalBackdrop" class="modal-backdrop" onclick="if(event.target.id==='modalBackdrop') closeModal()"><div class="modal" id="modal"></div></div>
 <div id="printArea"></div>
 <script>
-const VERSION = '5.9.6';
+const VERSION = '5.9.8';
 const STORAGE_KEY = 'shopFloorProjectCoreV5';
 const LEGACY_KEYS = ['shopFloorOperatingBoardV4','shopFloorV4','shopFloorData','shopFloorProjectCoreV5'];
 const PHASES = ['Idea','Planning','Design','Prep','Fabrication','Assembly','Test','Documentation','Complete'];
@@ -3140,8 +3140,8 @@ render = function(){
     const route = V59_ROUTES.find(r=>r[0]===ui.view); if(route){$('pageTitle').textContent=route[1]; $('pageLead').textContent=v59LeadFor(ui.view)||route[2];}
     const vb=$('versionBadge'); if(vb) vb.textContent=`v${VERSION} Project Core`;
   }
-  const footer=document.querySelector('.footer'); if(footer) footer.textContent='SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.6.';
-  document.title='SHOP FLOOR v5.9.6 | Scoping to Project';
+  const footer=document.querySelector('.footer'); if(footer) footer.textContent='SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.7.';
+  document.title='SHOP FLOOR v5.9.7 | Scoping to Project';
   state.schema=5.9; state.version=VERSION;
 };
 function renderScoping(){
@@ -3202,7 +3202,7 @@ const __v59LoadSampleBase = loadSampleData;
 loadSampleData = function(confirmFirst=false){if(confirmFirst && !confirm('Replace current local data with sample SHOP FLOOR v5.9.1 data?')) return; state=sampleState(); ensureModelV59(false); save(); render();};
 
 
-/* ===== SHOP FLOOR v5.9.6: Compact searchable/sortable inventory ledger ===== */
+/* ===== SHOP FLOOR v5.9.7: Compact searchable/sortable inventory ledger ===== */
 function v595InjectInventoryStyles(){
   if(document.getElementById('v595InventoryStyles')) return;
   const css = document.createElement('style');
@@ -3273,16 +3273,16 @@ function renderInventory(){
   </section>`;
 }
 const __v595RenderBase = render;
-render = function(){ __v595RenderBase(); v595InjectInventoryStyles(); const footer=document.querySelector('.footer'); if(footer) footer.textContent='SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.6.'; document.title='SHOP FLOOR v5.9.6 | Scoping to Project'; const vb=$('versionBadge'); if(vb) vb.textContent=`v${VERSION} Project Core`; };
+render = function(){ __v595RenderBase(); v595InjectInventoryStyles(); const footer=document.querySelector('.footer'); if(footer) footer.textContent='SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.7.'; document.title='SHOP FLOOR v5.9.7 | Scoping to Project'; const vb=$('versionBadge'); if(vb) vb.textContent=`v${VERSION} Project Core`; };
 
 ensureModelV59(true); render(); save();
 
 
-/* ===== SHOP FLOOR v5.9.6: Universal searchable / filterable / sortable tables ===== */
+/* ===== SHOP FLOOR v5.9.7: Universal searchable / filterable / sortable tables ===== */
 function v596InjectTableStyles(){
   if(document.getElementById('v596TableStyles')) return;
   const css=document.createElement('style'); css.id='v596TableStyles'; css.textContent=`
-    .smart-table-card{overflow:hidden}.smart-table-controls{display:grid;grid-template-columns:2fr repeat(auto-fit,minmax(150px,1fr));gap:10px;align-items:end;margin:12px 0}.smart-table-controls label{font-size:.76rem;font-weight:950;color:var(--muted);text-transform:uppercase;letter-spacing:.045em}.smart-table-controls input,.smart-table-controls select{width:100%;min-height:40px;padding:8px 10px;border-radius:14px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font:inherit;font-weight:850}.smart-table-controls .wide{min-width:240px}.smart-table-summary{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}.smart-table-summary .pill{border:1px solid var(--line);border-radius:999px;padding:6px 10px;background:var(--panel2);color:var(--text);font-weight:950}.smart-table th{position:sticky;top:0;z-index:2;background:var(--panel);cursor:pointer;user-select:none;white-space:nowrap}.smart-table th.no-sort{cursor:default}.smart-table td{padding:8px 10px;vertical-align:top}.smart-table .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}.smart-table .actions{text-align:right;white-space:nowrap}.smart-table .primary-cell{font-weight:950;line-height:1.15}.smart-table .cell-note{font-size:.76rem;color:var(--muted);font-weight:800;line-height:1.25;margin-top:2px}.smart-table .badge{font-size:.72rem;padding:3px 7px}.sort-caret{opacity:.75;font-size:.72rem;margin-left:4px}.smart-table-reset{padding:8px 10px!important;min-height:40px}.smart-table-empty{padding:18px!important;color:var(--muted);font-weight:900;text-align:center}
+    .smart-table-card{overflow:hidden}.smart-table-filter-drawer{border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.035);margin:12px 0}.smart-table-filter-drawer summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:12px;align-items:center;padding:10px 12px;font-weight:950;color:var(--text)}.smart-table-filter-drawer summary::-webkit-details-marker{display:none}.smart-table-filter-drawer summary:before{content:'▸';font-size:.9rem;color:var(--accent);transition:transform .15s ease}.smart-table-filter-drawer[open] summary:before{transform:rotate(90deg)}.smart-table-filter-drawer .filter-state{margin-left:auto;font-size:.76rem;color:var(--muted);font-weight:950;text-transform:uppercase;letter-spacing:.04em}.smart-table-controls{display:grid;grid-template-columns:2fr repeat(auto-fit,minmax(150px,1fr));gap:10px;align-items:end;padding:0 12px 12px;margin:0}.smart-table-controls label{font-size:.76rem;font-weight:950;color:var(--muted);text-transform:uppercase;letter-spacing:.045em}.smart-table-controls input,.smart-table-controls select{width:100%;min-height:40px;padding:8px 10px;border-radius:14px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font:inherit;font-weight:850}.smart-table-controls .wide{min-width:240px}.smart-table-summary{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}.smart-table-summary .pill{border:1px solid var(--line);border-radius:999px;padding:6px 10px;background:var(--panel2);color:var(--text);font-weight:950}.smart-table th{position:sticky;top:0;z-index:2;background:var(--panel);cursor:pointer;user-select:none;white-space:nowrap}.smart-table th.no-sort{cursor:default}.smart-table td{padding:8px 10px;vertical-align:top}.smart-table .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}.smart-table .actions{text-align:right;white-space:nowrap}.smart-table .primary-cell{font-weight:950;line-height:1.15}.smart-table .cell-note{font-size:.76rem;color:var(--muted);font-weight:800;line-height:1.25;margin-top:2px}.smart-table .badge{font-size:.72rem;padding:3px 7px}.sort-caret{opacity:.75;font-size:.72rem;margin-left:4px}.smart-table-reset{padding:8px 10px!important;min-height:40px}.smart-table-empty{padding:18px!important;color:var(--muted);font-weight:900;text-align:center}
     @media(max-width:900px){.smart-table-controls{grid-template-columns:1fr 1fr}.smart-table-controls .wide{grid-column:1/-1}.smart-table{min-width:1000px}}
   `; document.head.appendChild(css);
 }
@@ -3303,7 +3303,11 @@ function v596SmartTable(key, title, rows, cols, opts={}){
   filterCols.forEach(c=>{const val=st.filters[c.key]||'all'; if(val!=='all') visible=visible.filter(r=>String(v596FilterVal(r,c)||'Unset')===val);});
   const sortCol=cols.find(c=>c.key===st.sort);
   if(sortCol) visible.sort((a,b)=>{let av=v596SortVal(a,sortCol), bv=v596SortVal(b,sortCol); if(typeof av==='number'||typeof bv==='number'){av=n(av); bv=n(bv); return st.dir==='asc'?av-bv:bv-av;} av=String(av||'').toLowerCase(); bv=String(bv||'').toLowerCase(); return st.dir==='asc'?av.localeCompare(bv):bv.localeCompare(av);});
-  const controls=`<div class="smart-table-controls"><div class="wide"><label>Search ${esc(title)}</label><input value="${esc(st.q||'')}" placeholder="Search this table..." oninput="v596SetTableQuery('${key}', this.value)"></div>${filterCols.map(c=>{const values=Array.from(new Set(rows.map(r=>String(v596FilterVal(r,c)||'Unset')))).sort(); const cur=st.filters[c.key]||'all'; return `<div><label>${esc(c.label)}</label><select onchange="v596SetTableFilter('${key}','${c.key}',this.value)"><option value="all">All ${esc(c.label.toLowerCase())}</option>${values.map(v=>`<option value="${esc(v)}" ${cur===v?'selected':''}>${esc(v)}</option>`).join('')}</select></div>`;}).join('')}<div><label>Controls</label><button class="btn smart-table-reset" onclick="v596ResetTable('${key}')">Reset</button></div></div>`;
+  const activeFilterCount=Object.values(st.filters||{}).filter(v=>v&&v!=='all').length;
+  const controlsActive=!!q||activeFilterCount>0;
+  const filterState=controlsActive?`${q?'search active':''}${q&&activeFilterCount?' • ':''}${activeFilterCount?activeFilterCount+' filter'+(activeFilterCount===1?'':'s')+' active':''}`:'collapsed';
+  const controlsInner=`<div class="smart-table-controls"><div class="wide"><label>Search ${esc(title)}</label><input value="${esc(st.q||'')}" placeholder="Search this table..." oninput="v596SetTableQuery('${key}', this.value)"></div>${filterCols.map(c=>{const values=Array.from(new Set(rows.map(r=>String(v596FilterVal(r,c)||'Unset')))).sort(); const cur=st.filters[c.key]||'all'; return `<div><label>${esc(c.label)}</label><select onchange="v596SetTableFilter('${key}','${c.key}',this.value)"><option value="all">All ${esc(c.label.toLowerCase())}</option>${values.map(v=>`<option value="${esc(v)}" ${cur===v?'selected':''}>${esc(v)}</option>`).join('')}</select></div>`;}).join('')}<div><label>Controls</label><button class="btn smart-table-reset" onclick="v596ResetTable('${key}')">Reset</button></div></div>`;
+  const controls=`<details class="smart-table-filter-drawer" ${controlsActive?'open':''}><summary><span>Search / Filters</span><span class="filter-state">${esc(filterState)}</span></summary>${controlsInner}</details>`;
   const summary=`<div class="smart-table-summary"><span class="pill">Showing ${visible.length} of ${rows.length}</span>${opts.summary||''}</div>`;
   const th=cols.map(c=>`<th class="${c.sort===false?'no-sort':''} ${c.className||''}" ${c.sort===false?'':`onclick="v596SetTableSort('${key}','${c.key}')"`}>${esc(c.label)}${st.sort===c.key?`<span class="sort-caret">${st.dir==='asc'?'▲':'▼'}</span>`:''}</th>`).join('');
   const body=visible.map(r=>`<tr>${cols.map(c=>`<td class="${c.className||''}">${v596Cell(r,c)}</td>`).join('')}</tr>`).join('') || `<tr><td class="smart-table-empty" colspan="${cols.length}">No rows match the current search and filters.</td></tr>`;
@@ -3378,8 +3382,96 @@ function renderShopping(){
 }
 
 const __v596RenderBase = render;
-render = function(){ __v596RenderBase(); v596InjectTableStyles(); const footer=document.querySelector('.footer'); if(footer) footer.textContent='SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.6.'; document.title='SHOP FLOOR v5.9.6 | Scoping to Project'; const vb=$('versionBadge'); if(vb) vb.textContent='v5.9.6 Project Core'; };
+render = function(){ __v596RenderBase(); v596InjectTableStyles(); const footer=document.querySelector('.footer'); if(footer) footer.textContent='SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.7.'; document.title='SHOP FLOOR v5.9.7 | Scoping to Project'; const vb=$('versionBadge'); if(vb) vb.textContent='v5.9.7 Project Core'; };
 ensureModelV59(true); render(); save();
+
+
+/* --- SHOP FLOOR v5.9.8: Cookbook kind filters and working scope-gap tasks --- */
+function v598InjectStyles(){
+  if(document.getElementById('v598Styles')) return;
+  const style=document.createElement('style');
+  style.id='v598Styles';
+  style.textContent=`
+    .recipe-kind-pill{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:999px;padding:5px 10px;font-weight:950;cursor:pointer;line-height:1;margin:2px 4px 2px 0;display:inline-flex;align-items:center;gap:4px}
+    .recipe-kind-pill:hover,.recipe-kind-pill.active{background:var(--accent);color:#061015;border-color:var(--accent)}
+    .recipe-filter-strip{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0}.recipe-filter-strip .label{font-weight:950;color:var(--muted)}
+    .scope-task-list{display:grid;gap:8px}.scope-task-row{border:1px solid var(--line);border-left:7px solid var(--accent);border-radius:18px;background:var(--panel2);padding:10px 12px;display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.scope-task-row.done{border-left-color:var(--good);opacity:.78}.scope-task-row .meta{color:var(--muted);font-weight:850;font-size:.9rem}.scope-task-row .actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+  `;
+  document.head.appendChild(style);
+}
+function v598JsArg(value){ return JSON.stringify(String(value ?? '')).replace(/</g,'\\u003c').replace(/&/g,'\\u0026'); }
+function setRecipeKindFilter(kind){ ui.recipeKindFilter = kind || ''; render(); }
+function clearRecipeKindFilter(){ ui.recipeKindFilter = ''; render(); }
+function renderRecipeKindPill(kind){
+  const k = kind || 'Recipe';
+  const active = (ui.recipeKindFilter || '') === k;
+  return `<button type="button" class="recipe-kind-pill ${active?'active':''}" title="Filter cookbook to ${esc(k)}" onclick="setRecipeKindFilter(${v598JsArg(k)})">${esc(k)}</button>`;
+}
+function renderCookbook(){
+  v598InjectStyles(); ensureModelV51(false);
+  const kinds = Array.from(new Set((state.recipes||[]).map(r=>r.kind||'Recipe'))).sort();
+  const activeKind = ui.recipeKindFilter || '';
+  const recipes=(state.recipes||[]).filter(r=>{
+    const kindOk = !activeKind || (r.kind||'Recipe') === activeKind;
+    const searchOk = matchesSearch(r.title,r.kind,r.summary,r.steps,r.hazards,r.quality,r.cleanup,r.tags?.join(' '),...((r.toolIds||[]).map(id=>toolById(id)?.name)),...((r.spaceIds||[]).map(id=>spaceById(id)?.name)));
+    return kindOk && searchOk;
+  });
+  return `<div class="metric-row"><div class="metric"><b>${state.recipes.length}</b><span>task recipes</span></div><div class="metric"><b>${state.recipes.filter(r=>(r.toolIds||[]).length).length}</b><span>with tools</span></div><div class="metric"><b>${state.recipes.filter(r=>(r.spaceIds||[]).length).length}</b><span>with spaces</span></div><div class="metric"><b>${state.recipes.filter(r=>r.hazards||r.ppe).length}</b><span>with safety guidance</span></div></div>
+  <div class="toolbar"><button class="btn primary" onclick="openRecipeForm()">Add Recipe</button><button class="btn" onclick="printReport('cookbook')">Print Cookbook</button></div>
+  <section class="card"><h3>Task Recipe Cookbook</h3><p>Use recipes for repeatable shop processes: setup, tools, spaces, materials, safety, steps, quality checks, and cleanup. Click a task-kind pill on any card to filter the cookbook.</p>
+  <div class="recipe-filter-strip"><span class="label">Task kinds:</span>${kinds.map(renderRecipeKindPill).join('')}${activeKind?`<button class="btn small" onclick="clearRecipeKindFilter()">Clear ${esc(activeKind)} filter</button>`:''}</div>
+  ${activeKind?`<p>${badge('Filtered: '+activeKind,'good')} Showing ${recipes.length} of ${state.recipes.length} recipes.</p>`:`<p>${badge('All task kinds')} Showing ${recipes.length} recipes.</p>`}
+  <div class="grid cols-3">${recipes.map(renderRecipeCard).join('') || emptyCard('No recipes match this task kind or search.')}</div></section>`;
+}
+function renderRecipeCard(r){
+  return `<article class="card"><h3>${esc(r.title)}</h3><p>${esc(r.summary||'No summary yet.')}</p><div>${renderRecipeKindPill(r.kind||'Recipe')}${(r.tags||[]).map(t=>badge('#'+t)).join('')}</div>${kv('Tools',(r.toolIds||[]).map(id=>toolById(id)?.name).filter(Boolean).join(', ')||'None')}${kv('Spaces',(r.spaceIds||[]).map(id=>spaceById(id)?.name).filter(Boolean).join(', ')||'None')}${kv('PPE',r.ppe||'Task-specific')}${r.hazards?`<p><b>Hazards:</b> ${esc(r.hazards)}</p>`:''}<div class="toolbar"><button class="btn small primary" onclick="openRecipeForm('${r.id}')">Open</button><button class="btn small" onclick="createTaskFromRecipe('${r.id}', ui.selectedProjectId||'')">Add Task</button><button class="btn small" onclick="printRecipe('${r.id}')">Print</button></div></article>`;
+}
+function scopeTasks(sc){
+  const direct = Array.isArray(sc.scopeTasks) ? sc.scopeTasks : [];
+  const linked = (state.tasks||[]).filter(t => t.scopeId === sc.id && !direct.some(x=>x.taskId===t.id));
+  return [
+    ...direct.map(st=>({id:st.taskId||st.id,title:st.title,status:st.status||'Ready',created:st.created||'',task:getBy(state.tasks,st.taskId||st.id)})),
+    ...linked.map(t=>({id:t.id,title:t.title,status:t.status,created:t.created||'',task:t}))
+  ];
+}
+function renderScopeTasks(sc){
+  const rows = scopeTasks(sc);
+  if(!rows.length) return '<p>No scoping tasks yet. Use the Task button on a scope gap to create follow-up work.</p>';
+  return `<div class="scope-task-list">${rows.map(row=>{const t=row.task; const done=(t?.status||row.status)==='Done'; return `<div class="scope-task-row ${done?'done':''}"><div><strong>${esc(row.title)}</strong><div class="meta">${esc(t?.status||row.status||'Ready')} • ${esc(t?.priority||'Normal')} • due ${esc(t?.dueDate||'unset')}</div>${t?.notes?`<p>${esc(t.notes)}</p>`:''}</div><div class="actions"><button class="btn small" onclick="openTaskForm('${row.id}')">Open Task</button>${!done?`<button class="btn small" onclick="markTaskDone('${row.id}')">Done</button>`:''}</div></div>`;}).join('')}</div>`;
+}
+function createScopeTask(scopeId,title){
+  ensureModelV59(false);
+  const sc=scopeById(scopeId); if(!sc) return;
+  sc.scopeTasks = sc.scopeTasks || [];
+  const cleanTitle = String(title||'Scoping follow-up').trim() || 'Scoping follow-up';
+  const existing = sc.scopeTasks.find(x=>String(x.title||'')===cleanTitle) || (state.tasks||[]).find(t=>t.scopeId===scopeId && t.title===`Scope: ${cleanTitle}`);
+  if(existing){
+    openModal('Scope task already exists', `<p>A follow-up task already exists for <b>${esc(cleanTitle)}</b>.</p>`, `<div class="modal-actions"><button class="btn primary" onclick="closeModal()">OK</button></div>`);
+    return;
+  }
+  const task={id:uid('task'),title:`Scope: ${cleanTitle}`,scopeId:scopeId,projectId:'',type:'Scoping',status:'Ready',priority:sc.priority||'Normal',ownerId:sc.peopleIds?.[0]||'',toolId:'',spaceId:'',dueDate:sc.decisionDue||'',notes:`Scoping follow-up for: ${sc.title}\n\nGap: ${cleanTitle}\n\nUse this before converting the scope into a project.`};
+  state.tasks.push(task);
+  sc.scopeTasks.push({taskId:task.id,title:cleanTitle,status:'Ready',created:todayISO()});
+  save(); render();
+  openModal('Scope task created', `<p>Created a scoping task for <b>${esc(cleanTitle)}</b>.</p><p>It is now listed in this scope under <b>Scope Follow-up Tasks</b>.</p>`, `<div class="modal-actions"><button class="btn" onclick="closeModal()">Close</button><button class="btn primary" onclick="closeModal(); openTaskForm('${task.id}')">Open Task</button></div>`);
+}
+function renderScopeDetail(sc){
+  v598InjectStyles(); if(!sc) return ''; const est=scopeEstimate(sc); const rd=scopeReadiness(sc);
+  return `<section class="card" style="margin-top:18px"><div class="card-head"><div><h3>${esc(sc.title)} Scope</h3><p>Pre-project requirements, estimate, delivery target, feasibility notes, and conversion path.</p></div><span class="pct-pill ${pctClass(rd.score)}">${rd.score}% scoped</span></div>
+  <div class="scope-flow"><div class="card"><h4>Client Request</h4>${kv('Client',sc.clientName||'Unset')}${kv('Contact',sc.clientContact||'Unset')}${kv('Status',sc.status)}${kv('Requested',sc.requestDate||'Unset')}${kv('Decision due',sc.decisionDue||'Unset')}${kv('Delivery target',sc.deliveryDate||'Unset')}<p>${esc(sc.description||'No request summary recorded.')}</p></div>
+  <div class="card"><h4>Estimate</h4><div class="estimate-band"><div><b>${fmtMoney(est.materials)}</b><span>materials</span></div><div><b>${fmtMoney(est.labor)}</b><span>labor</span></div><div><b>${fmtMoney(est.high)}</b><span>proposal high</span></div></div>${kv('Hours',sc.estimatedHours||0)}${kv('Labor rate',fmtMoney(sc.laborRate||0))}${kv('Deposit',fmtMoney(sc.deposit||0))}</div></div>
+  <div class="grid cols-2" style="margin-top:16px"><div class="card"><h4>Requirements</h4><p><b>Requirements</b></p><p>${esc(sc.requirements||'No requirements captured.')}</p><p><b>Acceptance Criteria</b></p><p>${esc(sc.acceptanceCriteria||'No acceptance criteria captured.')}</p><p><b>Assumptions</b></p><p>${esc(sc.assumptions||'No assumptions recorded.')}</p><p><b>Exclusions</b></p><p>${esc(sc.exclusions||'No exclusions recorded.')}</p></div><div class="card"><h4>Scoping Gaps</h4><div class="scope-checklist">${rd.issues.map(i=>`<div class="alert ${i.level}"><div><strong>${esc(i.title)}</strong><p>${esc(i.detail)}</p></div><div class="alert-actions"><button class="btn small" onclick='createScopeTask(${v598JsArg(sc.id)}, ${v598JsArg(i.title)})'>Task</button></div></div>`).join('') || '<p>No major scoping gaps detected.</p>'}</div></div></div>
+  <div class="card" style="margin-top:16px"><h4>Scope Follow-up Tasks</h4>${renderScopeTasks(sc)}</div>
+  <div class="grid cols-2" style="margin-top:16px"><div class="card"><h4>Estimated Materials</h4>${renderScopeMaterials(sc)}<div class="toolbar"><button class="btn small" onclick="openScopeMaterialForm('${sc.id}')">Add Material</button></div></div><div class="card"><h4>Tools, Spaces, People</h4>${renderScopeLinks(sc)}<div class="toolbar"><button class="btn small" onclick="openScopeLinkForm('${sc.id}','tool')">Tools</button><button class="btn small" onclick="openScopeLinkForm('${sc.id}','space')">Spaces</button><button class="btn small" onclick="openScopeLinkForm('${sc.id}','person')">People</button></div></div></div>
+  <div class="card" style="margin-top:16px"><h4>Risks and Notes</h4><p><b>Risks:</b> ${esc(sc.risks||'No risks recorded.')}</p><p><b>Notes:</b> ${esc(sc.notes||'No notes recorded.')}</p></div>
+  <div class="toolbar"><button class="btn primary" onclick="openScopeForm('${sc.id}')">Edit Scope</button><button class="btn" onclick="duplicateScope('${sc.id}')">Duplicate</button><button class="btn" onclick="markScopeApproved('${sc.id}')">Mark Approved</button><button class="btn primary" onclick="convertScopeToProject('${sc.id}')">Convert to Project</button><button class="btn" onclick="printScope('${sc.id}')">Print Scope Sheet</button><button class="btn red" onclick="deleteScope('${sc.id}')">Delete</button></div>
+  </section>`;
+}
+
+const __v598RenderBase = render;
+render = function(){ __v598RenderBase(); v598InjectStyles(); const footer=document.querySelector('.footer'); if(footer) footer.textContent=`SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v${VERSION}.`; document.title=`SHOP FLOOR v${VERSION} | Scoping to Project`; const vb=$('versionBadge'); if(vb) vb.textContent=`v${VERSION} Project Core`; };
+ensureModelV59(true); render(); save();
+
 </script>
 </body>
 </html>
