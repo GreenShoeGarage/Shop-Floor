@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SHOP FLOOR v5.9.10 | Scoping to Project</title>
+<title>SHOP FLOOR v5.9.11 | Scoping to Project</title>
 <style>
 :root{
   --bg:#f6f1e8; --panel:#fffaf0; --panel2:#efe8d8; --panel3:#fff6da; --ink:#182126; --muted:#5a666d;
@@ -166,7 +166,7 @@ table{width:100%; border-collapse:collapse; min-width:700px;} th,td{text-align:l
 <body data-theme="dark">
 <div class="app-shell" id="shell">
   <aside class="sidebar">
-    <div class="brand"><div class="mark">SF</div><div><h1>SHOP<br>FLOOR</h1><span class="version" id="versionBadge">v5.9.10 Project Core</span></div></div>
+    <div class="brand"><div class="mark">SF</div><div><h1>SHOP<br>FLOOR</h1><span class="version" id="versionBadge">v5.9.11 Project Core</span></div></div>
     <p class="side-note">Project-centered shop management for a small tradigital team. Plan the work, prove readiness, protect people, buy what is missing, and keep machines healthy.</p>
     <nav class="nav" id="nav"></nav>
     <div class="side-tools">
@@ -186,13 +186,13 @@ table{width:100%; border-collapse:collapse; min-width:700px;} th,td{text-align:l
       <div class="quick-search"><input id="globalSearch" placeholder="Search projects, inventory, tools, spaces, JHAs, recipes, people, tasks, vendors, tags..." oninput="setSearch(this.value)" /></div>
     </div>
     <section id="app"></section>
-    <div class="footer">SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.10.</div>
+    <div class="footer">SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.11.</div>
   </main>
 </div>
 <div id="modalBackdrop" class="modal-backdrop" onclick="if(event.target.id==='modalBackdrop') closeModal()"><div class="modal" id="modal"></div></div>
 <div id="printArea"></div>
 <script>
-const VERSION = '5.9.10';
+const VERSION = '5.9.11';
 const STORAGE_KEY = 'shopFloorProjectCoreV5';
 const LEGACY_KEYS = ['shopFloorOperatingBoardV4','shopFloorV4','shopFloorData','shopFloorProjectCoreV5'];
 const PHASES = ['Idea','Planning','Design','Prep','Fabrication','Assembly','Test','Documentation','Complete'];
@@ -3140,8 +3140,8 @@ render = function(){
     const route = V59_ROUTES.find(r=>r[0]===ui.view); if(route){$('pageTitle').textContent=route[1]; $('pageLead').textContent=v59LeadFor(ui.view)||route[2];}
     const vb=$('versionBadge'); if(vb) vb.textContent=`v${VERSION} Project Core`;
   }
-  const footer=document.querySelector('.footer'); if(footer) footer.textContent='SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.10.';
-  document.title='SHOP FLOOR v5.9.10 | Scoping to Project';
+  const footer=document.querySelector('.footer'); if(footer) footer.textContent='SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.11.';
+  document.title='SHOP FLOOR v5.9.11 | Scoping to Project';
   state.schema=5.9; state.version=VERSION;
 };
 function renderScoping(){
@@ -3273,7 +3273,7 @@ function renderInventory(){
   </section>`;
 }
 const __v595RenderBase = render;
-render = function(){ __v595RenderBase(); v595InjectInventoryStyles(); const footer=document.querySelector('.footer'); if(footer) footer.textContent='SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.10.'; document.title='SHOP FLOOR v5.9.10 | Scoping to Project'; const vb=$('versionBadge'); if(vb) vb.textContent=`v${VERSION} Project Core`; };
+render = function(){ __v595RenderBase(); v595InjectInventoryStyles(); const footer=document.querySelector('.footer'); if(footer) footer.textContent='SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.11.'; document.title='SHOP FLOOR v5.9.11 | Scoping to Project'; const vb=$('versionBadge'); if(vb) vb.textContent=`v${VERSION} Project Core`; };
 
 ensureModelV59(true); render(); save();
 
@@ -3382,7 +3382,7 @@ function renderShopping(){
 }
 
 const __v596RenderBase = render;
-render = function(){ __v596RenderBase(); v596InjectTableStyles(); const footer=document.querySelector('.footer'); if(footer) footer.textContent='SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.10.'; document.title='SHOP FLOOR v5.9.10 | Scoping to Project'; const vb=$('versionBadge'); if(vb) vb.textContent='v5.9.10 Project Core'; };
+render = function(){ __v596RenderBase(); v596InjectTableStyles(); const footer=document.querySelector('.footer'); if(footer) footer.textContent='SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.11.'; document.title='SHOP FLOOR v5.9.11 | Scoping to Project'; const vb=$('versionBadge'); if(vb) vb.textContent='v5.9.11 Project Core'; };
 ensureModelV59(true); render(); save();
 
 
@@ -3675,6 +3675,116 @@ render(); save();
     `; document.head.appendChild(style);
   }
   render(); save();
+})();
+
+
+/* --- SHOP FLOOR v5.9.11: Cleanup pass, state hygiene, and UI decluttering --- */
+(function(){
+  const CLEANUP_VERSION = '5.9.11';
+  const COLLECTIONS = ['scopes','projects','inventory','tools','spaces','people','tasks','schedule','shopping','jhas','recipes','maintenance'];
+  function arr(key){ if(!Array.isArray(state[key])) state[key]=[]; return state[key]; }
+  function exists(key,id){ return !!id && arr(key).some(x=>String(x.id)===String(id)); }
+  function dedupeIds(list,key){ return Array.from(new Set((list||[]).filter(id=>exists(key,id)).map(String))); }
+  function cleanList(list){ return Array.from(new Set((Array.isArray(list)?list:String(list||'').split(',')).map(x=>String(x||'').trim()).filter(Boolean))); }
+  function ensureId(key,prefix){ arr(key).forEach((rec,i)=>{ rec.id = rec.id || `${prefix}_${Date.now()}_${i}`; }); }
+  function uniqueIdsInCollection(key,prefix){
+    const seen = new Set();
+    arr(key).forEach((rec,i)=>{
+      let id = String(rec.id||`${prefix}_${i}`);
+      if(seen.has(id)){ id = `${prefix}_${Date.now()}_${i}`; }
+      seen.add(id); rec.id = id;
+    });
+  }
+  window.sfNormalizeState = function(){
+    if(!state) return;
+    COLLECTIONS.forEach(arr);
+    uniqueIdsInCollection('scopes','scope'); uniqueIdsInCollection('projects','project'); uniqueIdsInCollection('inventory','item'); uniqueIdsInCollection('tools','tool'); uniqueIdsInCollection('spaces','space'); uniqueIdsInCollection('people','person'); uniqueIdsInCollection('tasks','task'); uniqueIdsInCollection('schedule','sched'); uniqueIdsInCollection('shopping','shop'); uniqueIdsInCollection('jhas','jha'); uniqueIdsInCollection('recipes','recipe'); uniqueIdsInCollection('maintenance','maint');
+    arr('projects').forEach(p=>{
+      p.toolIds = dedupeIds(p.toolIds,'tools');
+      p.spaceIds = dedupeIds(p.spaceIds,'spaces');
+      p.peopleIds = dedupeIds(p.peopleIds,'people');
+      p.materialReqs = (Array.isArray(p.materialReqs)?p.materialReqs:[]).filter(r=>exists('inventory',r.itemId)).map(r=>({itemId:String(r.itemId),qty:n(r.qty)}));
+      p.tags = cleanList(p.tags);
+      if(p.ownerId && !exists('people',p.ownerId)) p.ownerId='';
+    });
+    arr('scopes').forEach(sc=>{
+      sc.toolIds = dedupeIds(sc.toolIds,'tools'); sc.spaceIds = dedupeIds(sc.spaceIds,'spaces'); sc.peopleIds = dedupeIds(sc.peopleIds,'people');
+      sc.materialReqs = (Array.isArray(sc.materialReqs)?sc.materialReqs:[]).filter(r=>exists('inventory',r.itemId)).map(r=>({itemId:String(r.itemId),qty:n(r.qty)}));
+      sc.tags = cleanList(sc.tags); sc.scopeTasks = (Array.isArray(sc.scopeTasks)?sc.scopeTasks:[]).filter(t=>!t.taskId || exists('tasks',t.taskId));
+    });
+    arr('people').forEach(p=>{
+      p.skills = cleanList(p.skills); p.tags = cleanList(p.tags);
+      p.authz = Array.isArray(p.authz) ? p.authz.filter(a=>(a.targetType==='Tool' && exists('tools',a.targetId)) || (a.targetType==='Space' && exists('spaces',a.targetId))).map(a=>({targetType:a.targetType,targetId:String(a.targetId),expires:a.expires||'',notes:a.notes||''})) : [];
+      p.authorizations = p.authz.filter(a=>a.targetType==='Tool').map(a=>a.targetId);
+      p.spaceAuthorizations = p.authz.filter(a=>a.targetType==='Space').map(a=>a.targetId);
+    });
+    arr('tasks').forEach(t=>{ if(t.projectId && !exists('projects',t.projectId)) t.projectId=''; if(t.scopeId && !exists('scopes',t.scopeId)) t.scopeId=''; if(t.ownerId && !exists('people',t.ownerId)) t.ownerId=''; if(t.toolId && !exists('tools',t.toolId)) t.toolId=''; if(t.spaceId && !exists('spaces',t.spaceId)) t.spaceId=''; });
+    arr('schedule').forEach(s=>{ if(s.projectId && !exists('projects',s.projectId)) s.projectId=''; if(s.personId && !exists('people',s.personId)) s.personId=''; if(s.toolId && !exists('tools',s.toolId)) s.toolId=''; if(s.spaceId && !exists('spaces',s.spaceId)) s.spaceId=''; if(s.itemId && !exists('inventory',s.itemId)) s.itemId=''; });
+    arr('shopping').forEach(s=>{ if(s.projectId && !exists('projects',s.projectId)) s.projectId=''; if(s.itemId && !exists('inventory',s.itemId)) s.itemId=''; });
+    arr('maintenance').forEach(m=>{ if(m.targetType==='Tool' && !exists('tools',m.targetId)) m.targetId=''; if(m.targetType==='Space' && !exists('spaces',m.targetId)) m.targetId=''; if(m.ownerId && !exists('people',m.ownerId)) m.ownerId=''; });
+    arr('jhas').forEach(j=>{ if(j.targetType==='Tool' && !exists('tools',j.targetId)) j.targetId=''; if(j.targetType==='Space' && !exists('spaces',j.targetId)) j.targetId=''; j.tags=cleanList(j.tags); });
+    arr('recipes').forEach(r=>{ r.toolIds=dedupeIds(r.toolIds,'tools'); r.spaceIds=dedupeIds(r.spaceIds,'spaces'); r.tags=cleanList(r.tags); });
+    arr('inventory').forEach(it=>{ it.tags=cleanList(it.tags); it.onHand=n(it.onHand); it.reorder=n(it.reorder); it.unitCost=n(it.unitCost); });
+    arr('tools').forEach(t=>{ t.tags=cleanList(t.tags); }); arr('spaces').forEach(sp=>{ sp.tags=cleanList(sp.tags); });
+    if(ui.selectedProjectId && (!exists('projects',ui.selectedProjectId) || sfIsArchived?.(projectById(ui.selectedProjectId)))) ui.selectedProjectId = arr('projects').find(p=>!sfIsArchived?.(p))?.id || '';
+    if(ui.selectedScopeId && (!exists('scopes',ui.selectedScopeId) || sfIsArchived?.(scopeById(ui.selectedScopeId)))) ui.selectedScopeId = arr('scopes').find(sc=>!sfIsArchived?.(sc))?.id || '';
+    state.schema = 5.911; state.version = VERSION;
+  };
+  const __v5911Save = save;
+  window.save = save = function(){ try{ sfNormalizeState(); }catch(e){ console.warn('State cleanup warning', e); } __v5911Save(); };
+  function activeCount(key){ return arr(key).filter(x=>!(window.sfIsArchived&&sfIsArchived(x))).length; }
+  function archivedCount(){ return COLLECTIONS.reduce((a,k)=>a+arr(k).filter(x=>window.sfIsArchived&&sfIsArchived(x)).length,0); }
+  window.renderCleanupPanel = function(){
+    const orphanChecks = [];
+    arr('projects').forEach(p=>{ (p.materialReqs||[]).forEach(r=>{ if(!exists('inventory',r.itemId)) orphanChecks.push(`Project material reference on ${p.name||p.id}`); }); });
+    return `<section class="card"><h3>Cleanup Status</h3><p>This pass keeps working screens focused on active records, validates cross-links, and keeps closed work in Archive instead of cluttering daily use.</p><div class="metric-row"><div class="metric"><b>${activeCount('projects')}</b><span>active projects</span></div><div class="metric"><b>${activeCount('inventory')}</b><span>active inventory items</span></div><div class="metric"><b>${activeCount('maintenance')}</b><span>active maintenance items</span></div><div class="metric"><b>${archivedCount()}</b><span>archived historical records</span></div></div><div class="toolbar"><button class="btn" onclick="sfNormalizeState(); save(); render();">Normalize Data Now</button><button class="btn" onclick="sfArchiveClosedItems()">Archive Closed Items Now</button><button class="btn" onclick="setView('archive')">Open Archive</button></div>${orphanChecks.length?`<div class="alert warn"><div><strong>${orphanChecks.length} reference issues found</strong><p>Run Normalize Data Now to prune stale links.</p></div></div>`:`<div class="alert good"><div><strong>Data links look clean</strong><p>No stale project-material references detected.</p></div></div>`}</section>`;
+  };
+  if(typeof renderSettings === 'function'){
+    const __v5911Settings = renderSettings;
+    window.renderSettings = renderSettings = function(){
+      const html = __v5911Settings();
+      return html + renderCleanupPanel();
+    };
+  }
+  // Make archive/delete controls less visually dominant while preserving access.
+  if(!document.getElementById('v5911CleanupStyles')){
+    const style=document.createElement('style'); style.id='v5911CleanupStyles'; style.textContent=`
+      .archive-action-inline{opacity:.78; transform:scale(.96); transform-origin:left center}
+      .archive-action-inline:hover{opacity:1}
+      .archive-action-inline .btn{padding:5px 8px; font-size:11px}
+      .card .toolbar + .archive-action-inline{margin-top:6px}
+      .cleanup-note{font-size:12px;color:var(--muted);font-weight:800}
+    `; document.head.appendChild(style);
+  }
+  const __v5911Export = exportCSVPack;
+  window.exportCSVPack = exportCSVPack = function(){
+    sfNormalizeState();
+    const pack = [];
+    const add = (name, headers, rows) => pack.push(`${name}\n` + csv([headers, ...rows]));
+    add('PROJECTS',['id','archived','name','phase','status','owner','budget','actualCost','targetDate','readiness'], arr('projects').map(p=>[p.id,!!sfIsArchived?.(p),p.name,p.phase,p.status,personById(p.ownerId)?.name||'',p.budget,projectActualCost(p),p.targetDate,projectReadiness(p).overall]));
+    add('SCOPES',['id','archived','client','title','status','estimateLow','estimateHigh','deliveryDate','decisionDue'], arr('scopes').map(sc=>[sc.id,!!sfIsArchived?.(sc),sc.clientName,sc.title,sc.status,sc.estimateLow,sc.estimateHigh,sc.deliveryDate,sc.decisionDue]));
+    add('INVENTORY',['id','archived','name','category','onHand','committed','available','reorder','unitCost','vendor','location','sds'], arr('inventory').map(it=>[it.id,!!sfIsArchived?.(it),it.name,it.category,it.onHand,totalReservedQty(it.id),availableQty(it.id),it.reorder,it.unitCost,it.vendor,it.location,it.sdsUrl]));
+    add('TOOLS',['id','archived','name','type','status','nextMaintenance','ppe'], arr('tools').map(t=>[t.id,!!sfIsArchived?.(t),t.name,t.type,t.status,t.nextMaintenance,t.ppe]));
+    add('SPACES',['id','archived','name','type','status','nextMaintenance','ppe'], arr('spaces').map(sp=>[sp.id,!!sfIsArchived?.(sp),sp.name,sp.type,sp.status,sp.nextMaintenance,sp.ppe]));
+    add('PEOPLE',['id','archived','name','role','skills'], arr('people').map(p=>[p.id,!!sfIsArchived?.(p),p.name,p.role,(p.skills||[]).join(';')]));
+    add('AUTHORIZATIONS',['person','targetType','target','expires','status'], arr('people').flatMap(p=>(p.authz||[]).map(a=>[p.name,a.targetType,authTargetName(a),a.expires,authorizationCurrent(a)?'Current':'Expired'])));
+    add('TASKS',['id','archived','title','project','scope','type','status','priority','owner','dueDate'], arr('tasks').map(t=>[t.id,!!sfIsArchived?.(t),t.title,projectById(t.projectId)?.name||'',scopeById(t.scopeId)?.title||'',t.type,t.status,t.priority,personById(t.ownerId)?.name||'',t.dueDate]));
+    add('MAINTENANCE',['id','archived','title','frequency','targetType','target','nextDue','status','owner'], arr('maintenance').map(m=>[m.id,!!sfIsArchived?.(m),m.title,m.frequency,m.targetType,targetName(m.targetType,m.targetId),m.nextDue,m.status,personById(m.ownerId)?.name||'']));
+    add('SCHEDULE',['id','archived','title','type','date','endDate','project','tool','space','person','status'], arr('schedule').map(s=>[s.id,!!sfIsArchived?.(s),s.title,s.type,s.date,s.endDate,projectById(s.projectId)?.name||'',toolById(s.toolId)?.name||'',spaceById(s.spaceId)?.name||'',personById(s.personId)?.name||'',s.status]));
+    add('SHOPPING',['id','archived','name','qty','unit','vendor','neededBy','project','purchased','received'], arr('shopping').map(s=>[s.id,!!sfIsArchived?.(s),s.name,s.qty,s.unit,s.vendor,s.neededBy,projectById(s.projectId)?.name||'',!!s.purchased,!!s.received]));
+    add('JHAS',['id','archived','title','targetType','target','hazards','controls','ppe'], arr('jhas').map(j=>[j.id,!!sfIsArchived?.(j),j.title,j.targetType,targetName(j.targetType,j.targetId),j.hazards,j.controls,j.ppe]));
+    add('RECIPES',['id','archived','title','kind','tools','spaces','ppe','hazards'], arr('recipes').map(r=>[r.id,!!sfIsArchived?.(r),r.title,r.kind,(r.toolIds||[]).map(id=>toolById(id)?.name).filter(Boolean).join(';'),(r.spaceIds||[]).map(id=>spaceById(id)?.name).filter(Boolean).join(';'),r.ppe,r.hazards]));
+    download(`shop-floor-v${VERSION}-csv-pack.txt`, `SHOP FLOOR v${VERSION} CSV PACK\nGenerated ${new Date().toLocaleString()}\n\n` + pack.join('\n\n'), 'text/plain');
+  };
+  const __v5911Render = render;
+  window.render = render = function(){
+    try{ sfNormalizeState(); }catch(e){ console.warn('Cleanup render warning',e); }
+    __v5911Render();
+    const footer=document.querySelector('.footer'); if(footer) footer.textContent=`SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v${VERSION}.`;
+    document.title=`SHOP FLOOR v${VERSION} | Scoping to Project`;
+    const vb=document.getElementById('versionBadge'); if(vb) vb.textContent=`v${VERSION} Project Core`;
+  };
+  sfNormalizeState(); render(); save();
 })();
 
 </script>
