@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SHOP FLOOR v5.9.12 | Scoping to Project</title>
+<title>SHOP FLOOR v5.15.1 | Project Core</title>
 <style>
 :root{
   --bg:#f6f1e8; --panel:#fffaf0; --panel2:#efe8d8; --panel3:#fff6da; --ink:#182126; --muted:#5a666d;
@@ -192,7 +192,7 @@ table{width:100%; border-collapse:collapse; min-width:700px;} th,td{text-align:l
 <div id="modalBackdrop" class="modal-backdrop" onclick="if(event.target.id==='modalBackdrop') closeModal()"><div class="modal" id="modal"></div></div>
 <div id="printArea"></div>
 <script>
-const VERSION = '5.9.11';
+const VERSION = '5.15.1';
 const STORAGE_KEY = 'shopFloorProjectCoreV5';
 const LEGACY_KEYS = ['shopFloorOperatingBoardV4','shopFloorV4','shopFloorData','shopFloorProjectCoreV5'];
 const PHASES = ['Idea','Planning','Design','Prep','Fabrication','Assembly','Test','Documentation','Complete'];
@@ -3787,6 +3787,289 @@ render(); save();
   sfNormalizeState(); render(); save();
 })();
 
+
+/* --- SHOP FLOOR v5.15.0: Inventory Transactions Ledger + Project Safety Packet --- */
+(function(){
+  const APP_VERSION = '5.15.1';
+  function safeArr(key){ if(!Array.isArray(state[key])) state[key]=[]; return state[key]; }
+  function activeRows(key){ return safeArr(key).filter(x=>!(window.sfIsArchived && sfIsArchived(x))); }
+  function ensureModelV515(seedOpening=false){
+    safeArr('inventoryTransactions');
+    state.inventoryTransactions.forEach(tx=>{
+      tx.id = tx.id || uid('txn');
+      tx.date = tx.date || todayISO();
+      tx.type = tx.type || 'Adjustment';
+      tx.qty = n(tx.qty);
+      tx.unitCost = n(tx.unitCost);
+      tx.itemId = tx.itemId || '';
+      tx.projectId = tx.projectId || '';
+      tx.personId = tx.personId || '';
+      tx.note = tx.note || '';
+    });
+    if(seedOpening && !state.inventoryTransactions.length && (state.inventory||[]).length){
+      (state.inventory||[]).forEach(it=>{
+        if(n(it.onHand)!==0){
+          state.inventoryTransactions.push({id:uid('txn'),date:todayISO(),type:'Opening Count',itemId:it.id,projectId:'',personId:'',qty:n(it.onHand),unitCost:n(it.unitCost),note:'Opening inventory count created by v5.15 transaction ledger.',beforeOnHand:0,afterOnHand:n(it.onHand),beforeCommitted:requiredByProjectsQty(it.id),afterCommitted:requiredByProjectsQty(it.id),beforeAvailable:availableQty(it.id),afterAvailable:availableQty(it.id)});
+        }
+      });
+    }
+    state.schema = 5.15; state.version = APP_VERSION;
+  }
+  window.ensureModelV515 = ensureModelV515;
+
+  function projectMaterialReq(projectId,itemId){
+    const p=projectById(projectId); if(!p) return null;
+    p.materialReqs = Array.isArray(p.materialReqs) ? p.materialReqs : [];
+    let req = p.materialReqs.find(r=>r.itemId===itemId);
+    if(!req){ req={itemId, qty:0}; p.materialReqs.push(req); }
+    return req;
+  }
+  function applyInventoryTransaction(tx){
+    const it=itemById(tx.itemId); if(!it) return;
+    const type=String(tx.type||'Adjustment');
+    const qty=n(tx.qty);
+    if(['Add Stock','Receive Purchase','Opening Count'].includes(type)) it.onHand = n(it.onHand) + qty;
+    else if(['Consume Stock','Waste / Scrap'].includes(type)) it.onHand = n(it.onHand) - qty;
+    else if(type==='Set Count') it.onHand = qty;
+    else if(type==='Reserve to Project' && tx.projectId){ const req=projectMaterialReq(tx.projectId, tx.itemId); req.qty = n(req.qty) + qty; }
+    else if(type==='Release from Project' && tx.projectId){ const req=projectMaterialReq(tx.projectId, tx.itemId); req.qty = Math.max(0, n(req.qty) - qty); const p=projectById(tx.projectId); if(p) p.materialReqs=(p.materialReqs||[]).filter(r=>n(r.qty)>0); }
+    if(n(tx.unitCost)>0 && ['Add Stock','Receive Purchase','Opening Count','Set Count'].includes(type)) it.unitCost = n(tx.unitCost);
+  }
+  function recordInventoryTransaction(tx, apply=true, before=null){
+    ensureModelV515(false);
+    const it=itemById(tx.itemId); if(!it) return null;
+    const beforeSnap = before || {onHand:n(it.onHand), committed:requiredByProjectsQty(it.id), available:availableQty(it.id)};
+    if(apply) applyInventoryTransaction(tx);
+    const afterSnap = {onHand:n(it.onHand), committed:requiredByProjectsQty(it.id), available:availableQty(it.id)};
+    const rec={id:tx.id||uid('txn'),date:tx.date||todayISO(),type:tx.type||'Adjustment',itemId:tx.itemId,projectId:tx.projectId||'',personId:tx.personId||'',qty:n(tx.qty),unitCost:n(tx.unitCost),note:tx.note||'',beforeOnHand:beforeSnap.onHand,afterOnHand:afterSnap.onHand,beforeCommitted:beforeSnap.committed,afterCommitted:afterSnap.committed,beforeAvailable:beforeSnap.available,afterAvailable:afterSnap.available,createdAt:new Date().toISOString()};
+    state.inventoryTransactions.push(rec);
+    return rec;
+  }
+  window.recordInventoryTransaction = recordInventoryTransaction;
+
+  window.openStockTransaction = function(itemId='', projectId=''){
+    ensureModelV515(false);
+    openModal('Inventory Transaction', `<form id="stockForm" class="form-grid">
+      <div><label>Transaction type</label><select name="type">${['Add Stock','Consume Stock','Reserve to Project','Release from Project','Receive Purchase','Waste / Scrap','Set Count'].map(x=>`<option>${x}</option>`).join('')}</select></div>
+      <div><label>Date</label><input name="date" type="date" value="${todayISO()}"></div>
+      <div><label>Item</label><select name="itemId" required>${optionList(activeRows('inventory'), itemId)}</select></div>
+      <div><label>Quantity</label><input name="qty" type="number" step="0.01" value="1"></div>
+      <div><label>Project / reservation</label><select name="projectId"><option value="">No project</option>${optionList(activeRows('projects'), projectId)}</select></div>
+      <div><label>Person</label><select name="personId"><option value="">Unassigned</option>${optionList(activeRows('people'))}</select></div>
+      <div><label>Unit cost update</label><input name="unitCost" type="number" step="0.01" value="0"></div>
+      <div class="full"><label>Reason / note</label><textarea name="note" placeholder="received stock, consumed by project, cycle count correction, scrap, reserve/release explanation..."></textarea></div>
+    </form>`, `<div class="modal-actions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveStockTransaction()">Apply Transaction</button></div>`);
+  };
+  window.saveStockTransaction = function(){
+    const f=$('stockForm'); if(!f || !f.reportValidity()) return;
+    const tx={type:formValue(f,'type'),date:formValue(f,'date'),itemId:formValue(f,'itemId'),qty:n(formValue(f,'qty')),projectId:formValue(f,'projectId'),personId:formValue(f,'personId'),unitCost:n(formValue(f,'unitCost')),note:formValue(f,'note')};
+    if((tx.type==='Reserve to Project'||tx.type==='Release from Project') && !tx.projectId){ alert('Choose a project for reserve/release transactions.'); return; }
+    recordInventoryTransaction(tx,true); save(); closeModal(); render();
+  };
+
+  const __v515SaveReceive = typeof saveReceiveShopping === 'function' ? saveReceiveShopping : null;
+  if(__v515SaveReceive){
+    window.saveReceiveShopping = saveReceiveShopping = function(id){
+      const f=$('receiveForm');
+      const beforeData = f ? {itemId:formValue(f,'itemId'), qty:n(formValue(f,'qty')), unitCost:(n(formValue(f,'actualCost'))>0 && n(formValue(f,'qty'))>0)?Number((n(formValue(f,'actualCost'))/n(formValue(f,'qty'))).toFixed(2)):0, note:formValue(f,'note')} : null;
+      const itBefore = beforeData?.itemId ? itemById(beforeData.itemId) : null;
+      const beforeSnap = itBefore ? {onHand:n(itBefore.onHand), committed:requiredByProjectsQty(itBefore.id), available:availableQty(itBefore.id)} : null;
+      __v515SaveReceive(id);
+      const s=getBy(state.shopping||[], id);
+      if(beforeData && beforeData.itemId && beforeData.qty){
+        recordInventoryTransaction({type:'Receive Purchase',date:todayISO(),itemId:beforeData.itemId,qty:beforeData.qty,projectId:s?.projectId||'',personId:'',unitCost:beforeData.unitCost,note:beforeData.note||`Received ${s?.name||'shopping line'}`},false,beforeSnap);
+        save();
+      }
+    };
+  }
+
+  function inventoryTransactionRows(itemId=''){
+    ensureModelV515(false);
+    return (state.inventoryTransactions||[]).filter(tx=>!itemId || tx.itemId===itemId).map(tx=>({tx,date:tx.date,type:tx.type,item:itemById(tx.itemId)?.name||'Missing item',project:projectById(tx.projectId)?.name||'General shop',person:personById(tx.personId)?.name||'',qty:n(tx.qty),unitCost:n(tx.unitCost),before:tx.beforeOnHand,after:tx.afterOnHand,available:`${tx.beforeAvailable} → ${tx.afterAvailable}`,note:tx.note||'',searchText:[tx.date,tx.type,itemById(tx.itemId)?.name,projectById(tx.projectId)?.name,personById(tx.personId)?.name,tx.note].join(' ')}));
+  }
+  window.inventoryTransactionRows = inventoryTransactionRows;
+  function renderInventoryTransactionsPanel(itemId=''){
+    ensureModelV515(false);
+    const rows=inventoryTransactionRows(itemId);
+    const cols=[
+      {key:'date',label:'Date',sortValue:r=>r.date||'9999-12-31',value:r=>r.date},
+      {key:'type',label:'Type',filter:true,value:r=>r.type},
+      {key:'item',label:'Item',filter:true,value:r=>r.item},
+      {key:'project',label:'Project',filter:true,value:r=>r.project},
+      {key:'qty',label:'Qty',className:'num',sortValue:r=>r.qty,html:r=>`${r.qty} ${esc(itemById(r.tx.itemId)?.unit||'')}`},
+      {key:'before',label:'Before',className:'num',sortValue:r=>n(r.before),value:r=>r.before},
+      {key:'after',label:'After',className:'num',sortValue:r=>n(r.after),value:r=>r.after},
+      {key:'available',label:'Available',value:r=>r.available},
+      {key:'unitCost',label:'Unit Cost',className:'num',sortValue:r=>r.unitCost,html:r=>r.unitCost?fmtMoney(r.unitCost):''},
+      {key:'note',label:'Reason',value:r=>r.note}
+    ];
+    const totalAdds=rows.filter(r=>['Add Stock','Receive Purchase','Opening Count'].includes(r.type)).reduce((a,r)=>a+r.qty,0);
+    const totalUse=rows.filter(r=>['Consume Stock','Waste / Scrap'].includes(r.type)).reduce((a,r)=>a+r.qty,0);
+    return v596SmartTable('inventoryTransactions','Inventory Transactions Ledger',rows,cols,{description:'Every stock change has a reason. Use this ledger to audit receiving, consumption, waste, count adjustments, and project reservations.',summary:`<span class="pill">${rows.length} transactions</span><span class="pill">Added/received: ${totalAdds}</span><span class="pill">Consumed/scrapped: ${totalUse}</span>`});
+  }
+
+  const __v515RenderInventory = renderInventory;
+  window.renderInventory = renderInventory = function(){
+    ensureModelV515(false);
+    return __v515RenderInventory() + renderInventoryTransactionsPanel();
+  };
+
+  function txPrint(){
+    const rows=inventoryTransactionRows();
+    return `${printHeader('Inventory Transactions Ledger','Audit trail for stock changes, reservations, releases, receiving, waste, and cycle counts.')}${printSimpleTable(rows.map(r=>[r.date,r.type,r.item,r.project,r.person,r.qty,itemById(r.tx.itemId)?.unit||'',r.before,r.after,r.available,r.unitCost?fmtMoney(r.unitCost):'',r.note]),['Date','Type','Item','Project','Person','Qty','Unit','Before','After','Available','Unit Cost','Reason'])}`;
+  }
+
+  function jhaRowsForProject(p){
+    const toolRows=(p.toolIds||[]).map(toolById).filter(Boolean).flatMap(t=>jhasFor('Tool',t.id).map(j=>({target:t.name,type:'Tool',j}))); 
+    const spaceRows=(p.spaceIds||[]).map(spaceById).filter(Boolean).flatMap(sp=>jhasFor('Space',sp.id).map(j=>({target:sp.name,type:'Space',j})));
+    return [...toolRows,...spaceRows];
+  }
+  function projectSafetyPacketPrint(id){
+    const p=projectById(id); if(!p) return printHeader('Project Safety Packet','No project selected.')+'<p>No project selected.</p>';
+    const gates=(typeof v56ProjectSafetyGateDiagnostics==='function'?v56ProjectSafetyGateDiagnostics(p):[]).filter(x=>x.level!=='good');
+    const tools=(p.toolIds||[]).map(toolById).filter(Boolean); const spaces=(p.spaceIds||[]).map(spaceById).filter(Boolean); const people=(p.peopleIds||[]).map(personById).filter(Boolean);
+    const mats=(p.materialReqs||[]).map(r=>({req:r,it:itemById(r.itemId)})).filter(x=>x.it);
+    const maint=(state.maintenance||[]).filter(m=>m.status!=='Retired' && (m.targetType==='General' || tools.some(t=>m.targetType==='Tool'&&m.targetId===t.id) || spaces.some(sp=>m.targetType==='Space'&&m.targetId===sp.id)) && (overdue(m.nextDue)||soon(m.nextDue,30)||!String(m.safety||'').trim()));
+    const authRows=[]; people.forEach(person=>{ tools.forEach(t=>{const a=personAuthz(person,'Tool').find(x=>x.targetId===t.id); authRows.push([person.name,'Tool',t.name,a?.expires||'No authorization',a&&authorizationCurrent(a)?'Current':'BLOCKED']);}); spaces.forEach(sp=>{const a=personAuthz(person,'Space').find(x=>x.targetId===sp.id); authRows.push([person.name,'Space',sp.name,a?.expires||'No authorization',a&&authorizationCurrent(a)?'Current':'BLOCKED']);}); });
+    const jhaRows=jhaRowsForProject(p);
+    return `${printHeader('Project Safety Packet: '+p.name,'Project-specific package of required JHAs, SDS/material safety, PPE, authorizations, stop conditions, and maintenance safety gates.')}
+      <h2>Project Safety Summary</h2>${printSimpleTable([[p.name,p.phase||'',personById(p.ownerId)?.name||'Unassigned',p.targetDate||'Unset',p.safetyPPE||'Not documented',p.stopCondition||'Not documented']],['Project','Phase','Owner','Target','PPE Summary','Stop Condition'])}
+      <h2>Safety / Handling Plan</h2><p>${esc(p.safetyPlan||'No project safety / handling plan documented yet.')}</p>
+      <h2>Safety Gates</h2>${gates.length?printSimpleTable(gates.map(g=>[g.level.toUpperCase(),g.category||'',g.title,g.detail]),['Level','Category','Finding','Detail']):'<p>No active project safety gate blockers detected.</p>'}
+      <h2>Material Safety / SDS</h2>${printSimpleTable(mats.map(({req,it})=>[it.name,req.qty,it.unit||'',it.sdsUrl?'Linked':'Missing / not documented',it.hazards||'',it.ppe||'',it.storage||'',it.safetyNotes||'']),['Material','Qty','Unit','SDS','Hazards','PPE','Storage','Notes'])}
+      <h2>Tool and Space JHAs</h2>${jhaRows.length?printSimpleTable(jhaRows.map(x=>[x.type,x.target,x.j.title,x.j.hazards||'',x.j.controls||'',x.j.ppe||'',x.j.emergency||x.j.stopCondition||'']),['Type','Target','JHA','Hazards','Controls','PPE','Stop / Emergency']):'<p>No linked JHAs found for required tools or spaces.</p>'}
+      <h2>People Authorization Matrix</h2>${authRows.length?printSimpleTable(authRows,['Person','Required For','Item','Expires','Status']):'<p>No assigned people or no required tools/spaces.</p>'}
+      <h2>Maintenance Safety / Lockout Gates</h2>${maint.length?printSimpleTable(maint.map(m=>[m.frequency,m.title,m.targetType,targetName(m.targetType,m.targetId),m.nextDue||'Unset',m.safety||'MISSING',m.status||'Active']),['Frequency','Maintenance','Type','Target','Due','Safety / Lockout Notes','Status']):'<p>No due maintenance safety gates for the required tools/spaces.</p>'}`;
+  }
+  window.projectSafetyPacketPrint = projectSafetyPacketPrint;
+
+  const __v515Defs = v58PrintDefs;
+  window.v58PrintDefs = v58PrintDefs = function(){
+    const defs=__v515Defs();
+    return { ...defs,
+      projectSafetyPacket:{label:'Project Safety Packet',group:'Project prints',scope:'Single selected project',detail:'JHAs, SDS/material safety, PPE, authorization status, stop conditions, and maintenance safety gates.'},
+      inventoryTransactions:{label:'Inventory Transactions Ledger',group:'Stockroom reports',scope:'All inventory transactions',detail:'Audit trail for stock changes, receiving, consumption, waste, reservations, and count adjustments.'}
+    };
+  };
+  const __v515PrintTemplate = printTemplate;
+  window.printTemplate = printTemplate = function(type, projectId){
+    if(type==='projectSafetyPacket') return projectSafetyPacketPrint(projectId);
+    if(type==='inventoryTransactions') return txPrint();
+    return __v515PrintTemplate(type, projectId);
+  };
+  const __v515PrintReport = printReport;
+  window.printReport = printReport = function(type){
+    if(type==='inventoryTransactions') return printHTML(txPrint(), 'Inventory Transactions Ledger');
+    if(type==='projectSafetyPacket') return printHTML(projectSafetyPacketPrint(ui.selectedProjectId||ui.printProjectId||state.projects[0]?.id), 'Project Safety Packet');
+    return __v515PrintReport(type);
+  };
+  const __v515PrintProject = printProject;
+  window.printProject = printProject = function(id,kind){
+    if(kind==='safety') return printHTML(projectSafetyPacketPrint(id), 'Project Safety Packet: '+(projectById(id)?.name||''));
+    return __v515PrintProject(id,kind);
+  };
+
+  const __v515RenderProjectCockpit = renderProjectCockpit;
+  window.renderProjectCockpit = renderProjectCockpit = function(p){
+    const html=__v515RenderProjectCockpit(p); if(!p) return html;
+    return html.replace('Print Readiness</button>', 'Print Readiness</button><button class="btn small" onclick="printProject(\''+p.id+'\',\'safety\')">Print Safety Packet</button>');
+  };
+
+  const __v515Export = exportCSVPack;
+  window.exportCSVPack = exportCSVPack = function(){
+    ensureModelV515(false);
+    const rows=inventoryTransactionRows();
+    let out=`SHOP FLOOR v${APP_VERSION} INVENTORY TRANSACTIONS\n\n`+csv([['date','type','item','project','person','qty','unit','beforeOnHand','afterOnHand','beforeAvailable','afterAvailable','unitCost','note'],...rows.map(r=>[r.date,r.type,r.item,r.project,r.person,r.qty,itemById(r.tx.itemId)?.unit||'',r.before,r.after,r.tx.beforeAvailable,r.tx.afterAvailable,r.unitCost,r.note])]);
+    out += '\n\nNOTE\nUse Export Backup for the complete JSON dataset. This CSV pack focuses on the new v5.14 transaction audit trail.';
+    download(`shop-floor-v${APP_VERSION}-inventory-transactions.csv`, out, 'text/csv');
+  };
+
+  if(!document.getElementById('v515Styles')){
+    const style=document.createElement('style'); style.id='v515Styles'; style.textContent=`
+      .transaction-hint{font-size:.84rem;color:var(--muted);font-weight:850;margin:6px 0 0}
+      .print-doc h2{break-after:avoid}.print-doc table{break-inside:auto}.print-doc tr{break-inside:avoid}
+    `; document.head.appendChild(style);
+  }
+  const __v515Normalize = window.sfNormalizeState;
+  if(__v515Normalize){
+    window.sfNormalizeState = function(){ __v515Normalize(); ensureModelV515(false); state.inventoryTransactions = (state.inventoryTransactions||[]).filter(tx=>!tx.itemId || itemById(tx.itemId)); };
+  }
+  const __v515Render = render;
+  window.render = render = function(){ ensureModelV515(false); __v515Render(); document.title=`SHOP FLOOR v${APP_VERSION} | Project Core`; const vb=$('versionBadge'); if(vb) vb.textContent=`v${APP_VERSION} Project Core`; const footer=document.querySelector('.footer'); if(footer) footer.textContent=`SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v${APP_VERSION}.`; };
+  ensureModelV515(true); render(); save();
+})();
+
+
+
+/* v5.15.1 - Tool How-To URL and printable QR labels */
+(function(){
+  const TOOL_HOWTO_VERSION = '5.15.1';
+  function ensureToolHowToFields(){
+    if(!window.state || !Array.isArray(state.tools)) return;
+    state.tools.forEach(t=>{
+      if(typeof t.howToUrl === 'undefined') t.howToUrl = '';
+      if(!t.howToUrl && t.id === 'tool_saw') t.howToUrl = 'https://www.sawstop.com/support';
+      if(!t.howToUrl && t.id === 'tool_laser') t.howToUrl = 'https://www.epiloglaser.com/resources/';
+      if(!t.howToUrl && t.id === 'tool_prusa') t.howToUrl = 'https://help.prusa3d.com/';
+    });
+  }
+  function qrImg(url, size=164){
+    const clean = String(url||'').trim();
+    if(!clean) return '<div class="qr-placeholder">No how-to URL documented.</div>';
+    return `<div class="qr-box"><img class="qr-img" alt="QR code for how-to information" src="https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&margin=8&data=${encodeURIComponent(clean)}"><div class="qr-caption">Scan for how-to information</div></div>`;
+  }
+  window.sfToolHowToQR = qrImg;
+
+  window.openToolForm = openToolForm = function(id=null){
+    ensureToolHowToFields();
+    const t=id?toolById(id):{id:uid('tool'),name:'',type:'Machine',status:'Ready',nextMaintenance:'',lastMaintenance:'',ppe:'',safetyNotes:'',maintenanceNotes:'',howToUrl:'',notes:'',tags:[]};
+    openModal(id?'Edit Tool':'Add Tool', `<form id="toolForm" class="form-grid"><div><label>Name</label><input name="name" value="${esc(t.name)}" required></div><div><label>Type</label><select name="type">${['Machine','Hand Tool','Power Tool','Digital Fabrication','Electronics/Test Equipment','Kit','Computer'].map(x=>`<option ${t.type===x?'selected':''}>${x}</option>`).join('')}</select></div><div><label>Status</label><select name="status">${['Ready','Reserved','Needs Maintenance','Out of Service'].map(x=>`<option ${t.status===x?'selected':''}>${x}</option>`).join('')}</select></div><div><label>Last maintenance</label><input name="lastMaintenance" type="date" value="${esc(t.lastMaintenance)}"></div><div><label>Next maintenance</label><input name="nextMaintenance" type="date" value="${esc(t.nextMaintenance)}"></div><div><label>PPE</label><input name="ppe" value="${esc(t.ppe)}"></div><div><label>Tags</label><input name="tags" value="${esc((t.tags||[]).join(', '))}"></div><div class="full"><label>How To Use Information</label><input name="howToUrl" type="url" placeholder="https://example.com/tool-instructions" value="${esc(t.howToUrl||'')}"><p class="field-help">Enter a URL for tool instructions, manual, safety video, or local how-to page. SHOP FLOOR uses this URL to generate a printable QR code for the tool.</p></div><div class="full"><label>Maintenance notes</label><textarea name="maintenanceNotes">${esc(t.maintenanceNotes||'')}</textarea></div><div class="full"><label>Safety notes</label><textarea name="safetyNotes">${esc(t.safetyNotes||t.ppe||'')}</textarea></div><div class="full"><label>General notes</label><textarea name="notes">${esc(t.notes)}</textarea></div></form>`, `<div class="modal-actions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveToolForm('${t.id}',${id?'true':'false'})">Save Tool</button></div>`);
+  };
+
+  window.saveToolForm = saveToolForm = function(id,exists){
+    const f=$('toolForm'); if(!f.reportValidity())return; const t=exists?toolById(id):{id};
+    Object.assign(t,{name:formValue(f,'name'),type:formValue(f,'type'),status:formValue(f,'status'),lastMaintenance:formValue(f,'lastMaintenance'),nextMaintenance:formValue(f,'nextMaintenance'),ppe:formValue(f,'ppe'),tags:normalizeList(formValue(f,'tags')),howToUrl:formValue(f,'howToUrl'),maintenanceNotes:formValue(f,'maintenanceNotes'),safetyNotes:formValue(f,'safetyNotes'),notes:formValue(f,'notes')});
+    if(!exists)state.tools.push(t); save(); closeModal(); render();
+  };
+
+  window.renderToolCard = renderToolCard = function(t){
+    const p=assetStatusScore(t), cls=pctClass(p); const linked=activeProjects().filter(pr=>(pr.toolIds||[]).includes(t.id));
+    const howTo = String(t.howToUrl||'').trim();
+    return `<div class="alert ${cls}"><div style="flex:1"><strong>${esc(t.name)}</strong><p>${esc(t.status)} • ${esc(t.type)} • PM ${esc(t.nextMaintenance||'unset')} • PPE ${esc(t.ppe||'none')}</p><p>${esc(t.notes||'')}</p><div class="bar ${cls}"><span style="width:${p}%"></span></div>${linked.length?`<p>Linked projects: ${linked.map(x=>esc(x.name)).join(', ')}</p>`:''}${jhasFor('Tool',t.id).length?badge(`${jhasFor('Tool',t.id).length} JHA`,'good'):badge('No JHA','warn')}${howTo?badge('How-to QR ready','good'):badge('No how-to URL','warn')}</div><div class="alert-actions"><button class="btn small" onclick="openToolForm('${t.id}')">Edit</button><button class="btn small" onclick="openJHAForm(null,'Tool','${t.id}')">Add JHA</button><button class="btn small" onclick="createMaintenanceTask('${t.id}','Tool')">PM Task</button><button class="btn small" onclick="markMaintained('${t.id}')">Mark Maintained</button><button class="btn small" onclick="printToolCard('${t.id}')">Print Card</button><button class="btn small" onclick="printToolHowToQR('${t.id}')">Print How-To QR</button></div></div>`;
+  };
+
+  window.printToolCard = printToolCard = function(id){
+    const t=toolById(id); if(!t)return;
+    const url=String(t.howToUrl||'').trim();
+    printHTML(`${printHeader('Tool Card: '+t.name,'Item print: this prints one selected tool only.')}<div class="print-label tool-card-print"><div class="print-label-main"><h2>${esc(t.name)}</h2><p><b>Type:</b> ${esc(t.type)}</p><p><b>Status:</b> ${esc(t.status)}</p><p><b>PPE:</b> ${esc(t.ppe||'None listed')}</p><p><b>Next PM:</b> ${esc(t.nextMaintenance||'Unset')}</p><p><b>JHAs:</b> ${jhasFor('Tool',t.id).map(j=>esc(j.title)).join(', ')||'None'}</p>${url?`<p><b>How To Use:</b> ${esc(url)}</p>`:'<p><b>How To Use:</b> Not documented.</p>'}<div class="label-code">TOOL ${esc(t.id)}</div></div>${qrImg(url,150)}</div>`,'Tool Card: '+t.name);
+  };
+
+  window.printToolHowToQR = printToolHowToQR = function(id){
+    const t=toolById(id); if(!t)return;
+    const url=String(t.howToUrl||'').trim();
+    printHTML(`${printHeader('Tool How-To QR: '+t.name,'Item print: this prints one selected tool how-to label only.')}<div class="print-label qr-only-label"><h2>${esc(t.name)}</h2><p><b>How To Use Information</b></p>${qrImg(url,190)}${url?`<p class="qr-url">${esc(url)}</p>`:'<p>No how-to URL documented yet.</p>'}<div class="label-code">TOOL ${esc(t.id)}</div></div>`,'Tool How-To QR: '+t.name);
+  };
+
+  const prevExport = window.exportCSVPack;
+  if(prevExport){
+    window.exportCSVPack = exportCSVPack = function(){
+      ensureToolHowToFields();
+      prevExport();
+    };
+  }
+
+  if(!document.getElementById('v5151Styles')){
+    const style=document.createElement('style'); style.id='v5151Styles'; style.textContent=`
+      .field-help{font-size:12px;color:var(--muted);margin:6px 0 0;line-height:1.3;font-weight:800}
+      .qr-box{display:grid;justify-items:center;gap:4px;margin-top:8px}.qr-img{width:160px;height:160px;object-fit:contain;border:1px solid #222;background:#fff;padding:4px}.qr-caption{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:#222;font-weight:700}.qr-placeholder{width:160px;height:160px;border:2px dashed #666;display:grid;place-items:center;text-align:center;font-size:12px;padding:10px;color:#333}.tool-card-print{width:520px;display:flex;gap:16px;align-items:flex-start}.print-label-main{flex:1}.qr-only-label{width:300px;text-align:center}.qr-only-label .qr-img{width:190px;height:190px}.qr-url{font-size:9px;word-break:break-all;color:#222}
+      @media print{.tool-card-print{break-inside:avoid}.qr-img{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
+    `; document.head.appendChild(style);
+  }
+  const prevRender = render;
+  window.render = render = function(){ ensureToolHowToFields(); prevRender(); document.title=`SHOP FLOOR v${TOOL_HOWTO_VERSION} | Project Core`; const vb=$('versionBadge'); if(vb) vb.textContent=`v${TOOL_HOWTO_VERSION} Project Core`; };
+  ensureToolHowToFields();
+  if(state){ state.version = TOOL_HOWTO_VERSION; save(); render(); }
+})();
 </script>
 </body>
 </html>
