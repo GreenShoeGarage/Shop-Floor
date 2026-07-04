@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SHOP FLOOR v5.9.7 | Scoping to Project</title>
+<title>SHOP FLOOR v5.9.10 | Scoping to Project</title>
 <style>
 :root{
   --bg:#f6f1e8; --panel:#fffaf0; --panel2:#efe8d8; --panel3:#fff6da; --ink:#182126; --muted:#5a666d;
@@ -166,7 +166,7 @@ table{width:100%; border-collapse:collapse; min-width:700px;} th,td{text-align:l
 <body data-theme="dark">
 <div class="app-shell" id="shell">
   <aside class="sidebar">
-    <div class="brand"><div class="mark">SF</div><div><h1>SHOP<br>FLOOR</h1><span class="version" id="versionBadge">v5.9.7 Project Core</span></div></div>
+    <div class="brand"><div class="mark">SF</div><div><h1>SHOP<br>FLOOR</h1><span class="version" id="versionBadge">v5.9.10 Project Core</span></div></div>
     <p class="side-note">Project-centered shop management for a small tradigital team. Plan the work, prove readiness, protect people, buy what is missing, and keep machines healthy.</p>
     <nav class="nav" id="nav"></nav>
     <div class="side-tools">
@@ -186,13 +186,13 @@ table{width:100%; border-collapse:collapse; min-width:700px;} th,td{text-align:l
       <div class="quick-search"><input id="globalSearch" placeholder="Search projects, inventory, tools, spaces, JHAs, recipes, people, tasks, vendors, tags..." oninput="setSearch(this.value)" /></div>
     </div>
     <section id="app"></section>
-    <div class="footer">SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.7.</div>
+    <div class="footer">SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.10.</div>
   </main>
 </div>
 <div id="modalBackdrop" class="modal-backdrop" onclick="if(event.target.id==='modalBackdrop') closeModal()"><div class="modal" id="modal"></div></div>
 <div id="printArea"></div>
 <script>
-const VERSION = '5.9.8';
+const VERSION = '5.9.10';
 const STORAGE_KEY = 'shopFloorProjectCoreV5';
 const LEGACY_KEYS = ['shopFloorOperatingBoardV4','shopFloorV4','shopFloorData','shopFloorProjectCoreV5'];
 const PHASES = ['Idea','Planning','Design','Prep','Fabrication','Assembly','Test','Documentation','Complete'];
@@ -3140,8 +3140,8 @@ render = function(){
     const route = V59_ROUTES.find(r=>r[0]===ui.view); if(route){$('pageTitle').textContent=route[1]; $('pageLead').textContent=v59LeadFor(ui.view)||route[2];}
     const vb=$('versionBadge'); if(vb) vb.textContent=`v${VERSION} Project Core`;
   }
-  const footer=document.querySelector('.footer'); if(footer) footer.textContent='SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.7.';
-  document.title='SHOP FLOOR v5.9.7 | Scoping to Project';
+  const footer=document.querySelector('.footer'); if(footer) footer.textContent='SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.10.';
+  document.title='SHOP FLOOR v5.9.10 | Scoping to Project';
   state.schema=5.9; state.version=VERSION;
 };
 function renderScoping(){
@@ -3273,7 +3273,7 @@ function renderInventory(){
   </section>`;
 }
 const __v595RenderBase = render;
-render = function(){ __v595RenderBase(); v595InjectInventoryStyles(); const footer=document.querySelector('.footer'); if(footer) footer.textContent='SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.7.'; document.title='SHOP FLOOR v5.9.7 | Scoping to Project'; const vb=$('versionBadge'); if(vb) vb.textContent=`v${VERSION} Project Core`; };
+render = function(){ __v595RenderBase(); v595InjectInventoryStyles(); const footer=document.querySelector('.footer'); if(footer) footer.textContent='SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.10.'; document.title='SHOP FLOOR v5.9.10 | Scoping to Project'; const vb=$('versionBadge'); if(vb) vb.textContent=`v${VERSION} Project Core`; };
 
 ensureModelV59(true); render(); save();
 
@@ -3382,7 +3382,7 @@ function renderShopping(){
 }
 
 const __v596RenderBase = render;
-render = function(){ __v596RenderBase(); v596InjectTableStyles(); const footer=document.querySelector('.footer'); if(footer) footer.textContent='SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.7.'; document.title='SHOP FLOOR v5.9.7 | Scoping to Project'; const vb=$('versionBadge'); if(vb) vb.textContent='v5.9.7 Project Core'; };
+render = function(){ __v596RenderBase(); v596InjectTableStyles(); const footer=document.querySelector('.footer'); if(footer) footer.textContent='SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v5.9.10.'; document.title='SHOP FLOOR v5.9.10 | Scoping to Project'; const vb=$('versionBadge'); if(vb) vb.textContent='v5.9.10 Project Core'; };
 ensureModelV59(true); render(); save();
 
 
@@ -3405,7 +3405,7 @@ function clearRecipeKindFilter(){ ui.recipeKindFilter = ''; render(); }
 function renderRecipeKindPill(kind){
   const k = kind || 'Recipe';
   const active = (ui.recipeKindFilter || '') === k;
-  return `<button type="button" class="recipe-kind-pill ${active?'active':''}" title="Filter cookbook to ${esc(k)}" onclick="setRecipeKindFilter(${v598JsArg(k)})">${esc(k)}</button>`;
+  return `<button type="button" class="recipe-kind-pill ${active?'active':''}" data-recipe-kind="${esc(k)}" title="Filter cookbook to ${esc(k)}" onclick="event.stopPropagation(); setRecipeKindFilter(${v598JsArg(k)})">${esc(k)}</button>`;
 }
 function renderCookbook(){
   v598InjectStyles(); ensureModelV51(false);
@@ -3471,6 +3471,211 @@ function renderScopeDetail(sc){
 const __v598RenderBase = render;
 render = function(){ __v598RenderBase(); v598InjectStyles(); const footer=document.querySelector('.footer'); if(footer) footer.textContent=`SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v${VERSION}.`; document.title=`SHOP FLOOR v${VERSION} | Scoping to Project`; const vb=$('versionBadge'); if(vb) vb.textContent=`v${VERSION} Project Core`; };
 ensureModelV59(true); render(); save();
+
+
+/* --- SHOP FLOOR v5.9.9: Reliable cookbook kind pill filtering --- */
+function v599RecipeKindFromEventTarget(target){
+  const btn = target && target.closest ? target.closest('[data-recipe-kind]') : null;
+  return btn ? btn.getAttribute('data-recipe-kind') : '';
+}
+function setRecipeKindFilter(kind){
+  ui.recipeKindFilter = String(kind || '').trim();
+  ui.view = 'cookbook';
+  render();
+}
+function clearRecipeKindFilter(){
+  ui.recipeKindFilter = '';
+  ui.view = 'cookbook';
+  render();
+}
+// Inline handlers are kept for compatibility, but delegated handling makes the pills work even after rerenders.
+if(!window.__shopFloorRecipeKindDelegated){
+  window.__shopFloorRecipeKindDelegated = true;
+  document.addEventListener('click', function(e){
+    const kind = v599RecipeKindFromEventTarget(e.target);
+    if(!kind) return;
+    e.preventDefault();
+    e.stopPropagation();
+    setRecipeKindFilter(kind);
+  }, true);
+}
+const __v599RenderBase = render;
+render = function(){
+  __v599RenderBase();
+  const footer=document.querySelector('.footer');
+  if(footer) footer.textContent=`SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v${VERSION}.`;
+  document.title=`SHOP FLOOR v${VERSION} | Scoping to Project`;
+  const vb=$('versionBadge');
+  if(vb) vb.textContent=`v${VERSION} Project Core`;
+};
+render(); save();
+
+
+/* --- SHOP FLOOR v5.9.10: Archive and delete controls with historical log --- */
+(function(){
+  const ARCHIVE_COLLECTIONS = [
+    ['scopes','Scoping'],['projects','Projects'],['inventory','Inventory'],['tools','Tools'],['spaces','Spaces'],['people','People'],['tasks','Tasks'],['schedule','Schedule'],['shopping','Shopping'],['jhas','JHAs'],['recipes','Task Recipes'],['maintenance','Maintenance']
+  ];
+  const ARCHIVE_LABELS = Object.fromEntries(ARCHIVE_COLLECTIONS);
+  window.sfIsArchived = function(rec){ return !!(rec && (rec.archived || rec.archivedAt)); };
+  function sfCollectionLabel(key){ return ARCHIVE_LABELS[key] || key; }
+  function sfRecordTitle(rec){ return rec?.name || rec?.title || rec?.description || rec?.clientName || rec?.id || 'Untitled record'; }
+  function sfGetCollection(key){ return Array.isArray(state?.[key]) ? state[key] : []; }
+  function sfFindRecord(key,id){ return sfGetCollection(key).find(x => String(x.id) === String(id)); }
+  function sfActiveArray(arr){ return (arr || []).filter(x => !sfIsArchived(x)); }
+  window.sfArchiveRecord = function(key,id,reason='Archived by user'){
+    const rec = sfFindRecord(key,id);
+    if(!rec) return;
+    if(!confirm(`Archive ${sfCollectionLabel(key)} item “${sfRecordTitle(rec)}”?\n\nArchived records are hidden from normal working views but remain available in the Archive / History tab.`)) return;
+    rec.archived = true;
+    rec.archivedAt = new Date().toISOString();
+    rec.archivedReason = reason;
+    rec.archivedFromStatus = rec.status || rec.phase || '';
+    save(); render();
+  };
+  window.sfArchiveRecordSilent = function(key,id,reason='Closed out'){
+    const rec = sfFindRecord(key,id);
+    if(!rec || sfIsArchived(rec)) return;
+    rec.archived = true;
+    rec.archivedAt = new Date().toISOString();
+    rec.archivedReason = reason;
+    rec.archivedFromStatus = rec.status || rec.phase || '';
+  };
+  window.sfRestoreRecord = function(key,id){
+    const rec = sfFindRecord(key,id); if(!rec) return;
+    rec.archived = false; rec.archivedAt = ''; rec.archivedReason = ''; rec.restoredAt = new Date().toISOString();
+    save(); render();
+  };
+  window.sfDeleteRecord = function(key,id){
+    const rec = sfFindRecord(key,id);
+    if(!rec) return;
+    if(!confirm(`Permanently delete ${sfCollectionLabel(key)} item “${sfRecordTitle(rec)}”?\n\nThis cannot be undone. Use Archive instead if you may need the historical record.`)) return;
+    state[key] = sfGetCollection(key).filter(x => String(x.id) !== String(id));
+    if(key==='projects' && ui.selectedProjectId === id) ui.selectedProjectId = (state.projects||[]).find(p=>!sfIsArchived(p))?.id || null;
+    if(key==='scopes' && ui.selectedScopeId === id) ui.selectedScopeId = (state.scopes||[]).find(s=>!sfIsArchived(s))?.id || null;
+    save(); render();
+  };
+  window.sfArchiveClosedItems = function(){
+    let changed = 0;
+    (state.projects||[]).forEach(p=>{ if(!sfIsArchived(p) && ['Complete','Completed','Closed','Cancelled'].includes(p.status||p.phase)) { sfArchiveRecordSilent('projects',p.id,'Closed project'); changed++; }});
+    (state.tasks||[]).forEach(t=>{ if(!sfIsArchived(t) && ['Done','Complete','Completed','Closed'].includes(t.status)) { sfArchiveRecordSilent('tasks',t.id,'Closed task'); changed++; }});
+    (state.shopping||[]).forEach(s=>{ if(!sfIsArchived(s) && (s.received || ['Received','Closed','Done'].includes(s.status))) { sfArchiveRecordSilent('shopping',s.id,'Received shopping line'); changed++; }});
+    (state.scopes||[]).forEach(sc=>{ if(!sfIsArchived(sc) && ['Converted','Declined','Closed'].includes(sc.status)) { sfArchiveRecordSilent('scopes',sc.id,`Scope ${sc.status}`); changed++; }});
+    (state.schedule||[]).forEach(s=>{ if(!sfIsArchived(s) && ['Done','Complete','Completed','Cancelled','Closed'].includes(s.status)) { sfArchiveRecordSilent('schedule',s.id,'Closed schedule item'); changed++; }});
+    (state.maintenance||[]).forEach(m=>{ if(!sfIsArchived(m) && ['Retired','Closed','Archived'].includes(m.status)) { sfArchiveRecordSilent('maintenance',m.id,'Retired maintenance item'); changed++; }});
+    if(changed){ save(); render(); }
+  };
+  function sfArchiveButtonHTML(key,id){
+    return `<button class="btn small" data-archive-action="${key}:${id}" onclick="sfArchiveRecord('${key}','${id}')">Archive</button><button class="btn small red" data-delete-action="${key}:${id}" onclick="sfDeleteRecord('${key}','${id}')">Delete</button>`;
+  }
+  function sfAppendArchiveButtons(container,key,id){
+    if(!container || container.dataset.archiveButtonsAdded) return;
+    const rec = sfFindRecord(key,id);
+    if(!rec || sfIsArchived(rec)) return;
+    container.dataset.archiveButtonsAdded = '1';
+    const holder = document.createElement('span');
+    holder.className = 'archive-action-inline';
+    holder.innerHTML = sfArchiveButtonHTML(key,id);
+    container.appendChild(holder);
+  }
+  const OPEN_MAP = [
+    ['openProjectForm','projects'],['openItemForm','inventory'],['openToolForm','tools'],['openSpaceForm','spaces'],['openPersonForm','people'],['openTaskForm','tasks'],['openScheduleForm','schedule'],['openShoppingForm','shopping'],['openRecipeForm','recipes'],['openScopeForm','scopes'],['openMaintenanceForm','maintenance'],['openJHAForm','jhas']
+  ];
+  window.sfInjectArchiveButtons = function(){
+    if(ui.view === 'archive') return;
+    OPEN_MAP.forEach(([fn,key])=>{
+      document.querySelectorAll(`button[onclick^="${fn}('"]`).forEach(btn=>{
+        const oc = btn.getAttribute('onclick') || '';
+        const m = oc.match(/\('([^']+)'/);
+        if(!m || m[1]==='null' || m[1]==='') return;
+        const parent = btn.closest('.toolbar,.alert-actions,.actions,td') || btn.parentElement;
+        sfAppendArchiveButtons(parent,key,m[1]);
+      });
+    });
+  };
+  function sfWithActiveState(fn){
+    const backups = {};
+    ARCHIVE_COLLECTIONS.forEach(([key])=>{ if(Array.isArray(state?.[key])){ backups[key] = state[key]; state[key] = sfActiveArray(state[key]); }});
+    window.__sfActiveRenderFilter = true;
+    try { return fn(); }
+    finally { ARCHIVE_COLLECTIONS.forEach(([key])=>{ if(backups[key]) state[key] = backups[key]; }); window.__sfActiveRenderFilter = false; }
+  }
+  window.renderArchive = function(){
+    const rows = ARCHIVE_COLLECTIONS.flatMap(([key,label]) => sfGetCollection(key).filter(sfIsArchived).map(rec => ({key,label,rec,title:sfRecordTitle(rec),status:rec.status||rec.phase||'', archivedAt:rec.archivedAt||'', reason:rec.archivedReason||'', searchText:[label,sfRecordTitle(rec),rec.status,rec.phase,rec.archivedReason,rec.notes,rec.description,rec.category,rec.vendor].join(' ')})));
+    const cols = [
+      {key:'label',label:'Type',filter:true,value:r=>r.label},
+      {key:'title',label:'Record',html:r=>`<div class="primary-cell">${esc(r.title)}</div><div class="cell-note">${esc(r.rec.id||'')}</div>`},
+      {key:'status',label:'Closed Status',filter:true,value:r=>r.status||'Unset'},
+      {key:'archivedAt',label:'Archived',sortValue:r=>r.archivedAt||'',html:r=>esc((r.archivedAt||'').slice(0,10)||'Unknown')},
+      {key:'reason',label:'Reason',value:r=>r.reason||'Archived'},
+      {key:'actions',label:'Actions',sort:false,className:'actions',html:r=>`<button class="btn small" onclick="sfRestoreRecord('${r.key}','${r.rec.id}')">Restore</button><button class="btn small red" onclick="sfDeleteRecord('${r.key}','${r.rec.id}')">Delete Permanently</button>`}
+    ];
+    const byType = ARCHIVE_COLLECTIONS.map(([key,label])=>({label,count:sfGetCollection(key).filter(sfIsArchived).length})).filter(x=>x.count);
+    return `<div class="metric-row"><div class="metric"><b>${rows.length}</b><span>archived records</span></div><div class="metric"><b>${byType.length}</b><span>record types represented</span></div><div class="metric"><b>${(state.projects||[]).filter(sfIsArchived).length}</b><span>archived projects</span></div><div class="metric"><b>${(state.tasks||[]).filter(sfIsArchived).length}</b><span>archived tasks</span></div></div>
+      <section class="card"><h3>Archive / Historical Log</h3><p>Finished, closed, received, converted, or deliberately archived items are removed from normal working views so the shop stays clean. Restore an item to bring it back into active operations, or permanently delete it when you are certain it is no longer needed.</p><div class="toolbar"><button class="btn" onclick="sfArchiveClosedItems()">Archive Closed Items Now</button><button class="btn" onclick="printArchiveLog()">Print Archive Log</button></div></section>
+      ${typeof v596SmartTable==='function' ? v596SmartTable('archive','Historical Log',rows,cols,{description:'Search, filter, and sort archived records across the whole shop.'}) : `<section class="card"><h3>Historical Log</h3>${rows.map(r=>`<div class="alert"><div><strong>${esc(r.label)}: ${esc(r.title)}</strong><p>${esc(r.status)} • ${esc(r.reason)} • ${esc((r.archivedAt||'').slice(0,10))}</p></div><div class="alert-actions"><button class="btn small" onclick="sfRestoreRecord('${r.key}','${r.rec.id}')">Restore</button><button class="btn small red" onclick="sfDeleteRecord('${r.key}','${r.rec.id}')">Delete Permanently</button></div></div>`).join('') || '<p>No archived records yet.</p>'}</section>`}`;
+  };
+  window.printArchiveLog = function(){
+    const rows = ARCHIVE_COLLECTIONS.flatMap(([key,label]) => sfGetCollection(key).filter(sfIsArchived).map(rec => [label, sfRecordTitle(rec), rec.status||rec.phase||'', (rec.archivedAt||'').slice(0,10), rec.archivedReason||'Archived']));
+    printHTML(`${printHeader('Archive / Historical Log')}${printSimpleTable(rows,['Type','Record','Status','Archived','Reason'])}`);
+  };
+  // Add the route once, near Reports & Print.
+  if(Array.isArray(window.V59_ROUTES || V59_ROUTES) && !V59_ROUTES.some(r=>r[0]==='archive')){
+    const idx = V59_ROUTES.findIndex(r=>r[0]==='print');
+    V59_ROUTES.splice(idx>=0?idx+1:V59_ROUTES.length,0,['archive','Archive','historical log and restored records']);
+  }
+  const __sfV5910LeadBase = typeof v59LeadFor === 'function' ? v59LeadFor : null;
+  if(__sfV5910LeadBase){ window.v59LeadFor = v59LeadFor = function(view){ if(view==='archive') return 'Historical log for closed, completed, received, converted, and archived records.'; return __sfV5910LeadBase(view); }; }
+  // Auto-archive the most common closed-out workflows.
+  if(typeof markTaskDone === 'function'){
+    const __sfMarkTaskDone = markTaskDone;
+    window.markTaskDone = markTaskDone = function(id){ __sfMarkTaskDone(id); const t=sfFindRecord('tasks',id); if(t && !sfIsArchived(t)){ sfArchiveRecordSilent('tasks',id,'Task completed'); save(); render(); } };
+  }
+  if(typeof receiveShopping === 'function'){
+    const __sfReceiveShopping = receiveShopping;
+    window.receiveShopping = receiveShopping = function(id){ __sfReceiveShopping(id); const s=sfFindRecord('shopping',id); if(s && !sfIsArchived(s)){ sfArchiveRecordSilent('shopping',id,'Shopping line received'); save(); render(); } };
+  }
+  if(typeof convertScopeToProject === 'function'){
+    const __sfConvertScope = convertScopeToProject;
+    window.convertScopeToProject = convertScopeToProject = function(id){ __sfConvertScope(id); const sc=sfFindRecord('scopes',id); if(sc && !sfIsArchived(sc) && sc.status==='Converted'){ sfArchiveRecordSilent('scopes',id,'Converted to project'); save(); render(); } };
+  }
+  // Render with active records only for working views; Archive sees the full historical set.
+  const __sfV5910RenderBase = render;
+  window.render = render = function(){
+    if(ui.view === 'archive'){
+      if(typeof v596InjectTableStyles==='function') v596InjectTableStyles();
+      if(typeof v598InjectStyles==='function') v598InjectStyles();
+      document.getElementById('nav').innerHTML = navHTML();
+      document.getElementById('pageTitle').textContent = 'Archive';
+      document.getElementById('pageLead').textContent = 'Historical log for closed and archived records.';
+      document.getElementById('app').innerHTML = renderArchive();
+    } else {
+      sfWithActiveState(__sfV5910RenderBase);
+      sfInjectArchiveButtons();
+    }
+    const footer=document.querySelector('.footer');
+    if(footer) footer.textContent=`SHOP FLOOR | M.B. Parks, Green Shoe Garage (c) 2026. All rights reserved. Field Instrument v${VERSION}.`;
+    document.title=`SHOP FLOOR v${VERSION} | Scoping to Project`;
+    const vb=document.getElementById('versionBadge'); if(vb) vb.textContent=`v${VERSION} Project Core`;
+  };
+  // Add a compact Settings entry so the capability is discoverable.
+  if(typeof renderSettings === 'function'){
+    const __sfSettings = renderSettings;
+    window.renderSettings = renderSettings = function(){
+      const html = __sfSettings();
+      return html.replace('</section>', `<div class="card" style="margin-top:16px"><h3>Archive and History</h3><p>Closed and completed work can be archived so active screens stay focused. Archived records remain searchable in the historical log and can be restored later.</p><div class="toolbar"><button class="btn" onclick="setView('archive')">Open Archive</button><button class="btn" onclick="sfArchiveClosedItems()">Archive Closed Items Now</button></div></div></section>`);
+    };
+  }
+  // Styles for archive actions.
+  if(!document.getElementById('archiveStyles')){
+    const style=document.createElement('style'); style.id='archiveStyles'; style.textContent=`
+      .archive-action-inline{display:inline-flex; gap:6px; flex-wrap:wrap; margin-left:4px}
+      .btn.red{background:#fff0ed; color:#b42318; border-color:#ffd3cc}
+      body.dark .btn.red{background:rgba(180,35,24,.18); color:#ffb4a8; border-color:rgba(255,180,168,.35)}
+    `; document.head.appendChild(style);
+  }
+  render(); save();
+})();
 
 </script>
 </body>
